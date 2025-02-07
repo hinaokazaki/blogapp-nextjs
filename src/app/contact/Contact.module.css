@@ -1,0 +1,78 @@
+.formTitle {
+  font-size: 1.5rem;
+  margin: 0 0 40px 0;
+}
+
+.contactBox{
+  margin: 40px auto 0;
+  padding: 0 10px;
+  max-width: 800px;
+}
+
+.formBox {
+  display: flex;
+}
+
+.formSection {
+  margin: 0 0 40px 0;
+}
+
+.formLabel {
+  width: 200px;
+  font-size: 1.15rem;
+}
+
+.formInput {
+  max-width: calc(100% - 10px);
+  height: 50px;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  border-radius: 8px;
+  border: solid 1px rgb(198, 198, 198);
+}
+
+.textArea {
+  height: 200px;
+  max-width: calc(100% - 10px);
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  border-radius: 8px;
+  border: solid 1px rgb(198, 198, 198);
+}
+
+.formButtons {
+  margin: 50px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.formSubmitButton {
+  margin: 0 10px;
+  padding: 10px 18px;
+  color: rgb(255 255 255);
+  background-color: rgb(31 41 55);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.formClearButton {
+  margin: 0 10px;
+  padding: 10px 18px;
+  color: rgb(31 41 55);
+  background-color: rgb(198, 198, 198);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.errorMessage {
+  margin-left: 200px;
+  color: red;
+}

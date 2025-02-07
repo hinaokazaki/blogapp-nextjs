@@ -1,0 +1,8 @@
+.categoriesButton {
+  border: 1px solid #06c;
+  border-radius: 0.2rem;
+  color: #06c;
+  margin: 0 .3rem;
+  padding: 0.5rem;
+  background-color: #fff;
+}
