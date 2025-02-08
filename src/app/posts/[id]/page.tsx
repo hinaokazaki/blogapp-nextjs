@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { Post } from '@/app/_types/type';
 import { useParams } from 'next/navigation';
-import Loading from '@/app/Loading';
-import NotFound from '@/app/Not-found';
+import Loading from '@/app/_components/Loading';
+import NotFound from '@/app/_components/Not-found';
 import PostUi from '../_components/PostUi';
 
 type ApiRes = {

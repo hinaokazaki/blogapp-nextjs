@@ -12,7 +12,7 @@ export const metadata = {
   description: 'Next.js を使ったブログアプリ'
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ja">
       <body id='body'>

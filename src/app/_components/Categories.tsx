@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from '@/app/css/Categories.module.css'
+import classes from '@/app/_styles/Categories.module.css'
 
 type Props = {
   categories: string[] 
