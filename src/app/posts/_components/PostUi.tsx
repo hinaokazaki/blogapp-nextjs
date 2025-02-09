@@ -1,11 +1,11 @@
 import Categories from '@/app/_components/Categories';
 import Text from '@/app/_components/Text';
 import classes from '@/app/posts/posts.module.css';
-import { Post } from '@/app/_types/type';
+import { MicroCmsPost } from '@/app/_types/type';
 import Image from 'next/image';
 
 type Props = {
-  post: Post
+  post: MicroCmsPost
 }
 
 const PostUi: React.FC<Props> = ({ post }) => {
@@ -16,7 +16,7 @@ const PostUi: React.FC<Props> = ({ post }) => {
           <Image 
             height={400}
             width={800}
-            src={post.thumbnailUrl} 
+            src={post.thumbnail.url} 
             className={classes.postsImg} 
             alt={post.title}
           />
