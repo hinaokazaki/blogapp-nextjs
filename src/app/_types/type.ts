@@ -6,3 +6,10 @@ export type MicroCmsPost = {
   categories: { id: string; name: string }[],
   thumbnail: { url: string; height: number; width: number }
 };
+
+export type MicroCmsCategory = {
+  categories: { 
+    id: string,
+    name: string
+  }[]
+};

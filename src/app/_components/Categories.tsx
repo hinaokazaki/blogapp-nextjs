@@ -1,14 +1,8 @@
 import React from 'react';
 import classes from '@/app/_styles/Categories.module.css'
+import { MicroCmsCategory } from '../_types/type';
 
-type Props = {
-  categories: { 
-    id: string,
-    name: string
-  }[]
-};
-
-const Categories: React.FC<Props> = ({ categories }) => {
+const Categories: React.FC<MicroCmsCategory> = ({ categories }) => {
   return (
     <div>
       {categories.map((item, index) => 
