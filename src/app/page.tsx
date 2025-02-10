@@ -2,39 +2,42 @@
 import React from 'react';
 import classes from './page.module.css';
 import { useState, useEffect } from 'react';
-import { Post } from '@/app/_types/type';
+import { MicroCmsPost } from '@/app/_types/type';
 import Link from 'next/link';
 import Categories from '@/app/_components/Categories';
 import Text from '@/app/_components/Text';
+import Loading from './_components/Loading';
+import NotFound from './_components/Not-found';
 
 type ApiRes = {
-  posts: Post[]
+  posts: MicroCmsPost[]
 }
 
 const Home: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setisLoading] = useState(true);
+  const [posts, setPosts] = useState<MicroCmsPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetcher = async () => {
-      try {
-        const res = await fetch('https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts');
-        
-        if (!res.ok) {
-          throw new Error('HTTP Error!');
-        }
-        const data: ApiRes = await res.json();
-        setPosts(data.posts);
-      } catch (error){
-        console.error('postのデータを読み込めませんでした', error)
-      } finally {
-        setisLoading(false);
-      }
+      // 管理画面で取得したエンドポイントを入力
+      const res = await fetch('https://kvjqi36xjz.microcms.io/api/v1/posts', { 
+        // fetch関数の第二引数にheadersを設定でき、その中にAPIキーを設定
+        headers: {
+          // 管理画面で取得したAPIキーを入力してください。
+          'X-MICROCMS-API-KEY': process.env
+            .NEXT_PUBLIC_MICROCMS_API_KEY as string,
+        },
+      })
+      const { contents } = await res.json()
+      console.log(contents);
+      setPosts(contents)
+      setIsLoading(false);
     };
 
     fetcher(); 
 
   },[])
+
 
   // 本文のテキストに文字制限をかけた後にhtmlとして表示するようにする関数
   const maxLength: number = 60;
@@ -42,11 +45,11 @@ const Home: React.FC = () => {
   
   // データが取得される間のローディング中の表示、早期リターン
   if (isLoading)
-    return <div className={classes.loadingMessage}>読み込み中...</div>
+    return <Loading />
   
   // ローディングが終わってpostsが空である時の表示、早期リターン
   if(posts.length === 0) 
-    return <div className={classes.errorHandring}>記事が見つかりません。</div>
+    return <NotFound />
   
   return (
     <>
