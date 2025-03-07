@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { MicroCmsPost } from '@/app/_types/type';
+import { PostData } from '@/app/_types/type';
 import { useParams } from 'next/navigation';
 import Loading from '@/app/_components/Loading';
 import NotFound from '@/app/_components/Not-found';
@@ -11,20 +11,19 @@ const Posts: React.FC = () => {
   const id = params.id
   console.log(id);
 
-  const [post, setPost] = useState<MicroCmsPost | null>(null);
+  const [post, setPost] = useState<PostData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetcher = async () => {
-      setIsLoading(true)
-      const res = await fetch(`https://kvjqi36xjz.microcms.io/api/v1/posts/${id}`, {
+      const res = await fetch(`/api/admin/posts/${id}`, {
         headers: {
-          'X-MICROCMS-API-KEY': process.env
-            .NEXT_PUBLIC_MICROCMS_API_KEY as string,
+          'Content-Type': 'application/json'
         },
       })
       const data = await res.json();
-      setPost(data)
+      setPost(data.post)
+      console.log('page', data.post);
       setIsLoading(false)
     }
 

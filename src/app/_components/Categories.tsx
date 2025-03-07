@@ -1,12 +1,12 @@
 import React from 'react';
 import classes from '@/app/_styles/Categories.module.css'
-import { MicroCmsCategory } from '../_types/type';
+import { CategoriesButtonProps } from '../_types/type';
 
-const Categories: React.FC<MicroCmsCategory> = ({ categories }) => {
+const Categories: React.FC<CategoriesButtonProps> = ({ postCategories }) => {
   return (
     <div>
-      {categories.map((item, index) => 
-        <button key={index} type='button' className={classes.categoriesButton}>{item.name}</button>
+      {postCategories.map((item, index) => 
+        <button key={index} type='button' className={classes.categoriesButton}>{item.category.name}</button>
       )}
     </div>
   )
