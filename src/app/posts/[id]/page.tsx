@@ -16,7 +16,7 @@ const Posts: React.FC = () => {
 
   useEffect(() => {
     const fetcher = async () => {
-      const res = await fetch(`/api/admin/posts/${id}`, {
+      const res = await fetch(`/api/posts/${id}`, {
         headers: {
           'Content-Type': 'application/json'
         },

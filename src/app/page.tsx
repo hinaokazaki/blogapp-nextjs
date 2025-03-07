@@ -16,7 +16,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetcher = async () => {
       // 管理画面で取得したエンドポイントを入力
-      const res = await fetch('/api/admin/posts', { 
+      const res = await fetch('/api/posts', { 
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
