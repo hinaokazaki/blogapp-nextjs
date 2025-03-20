@@ -1,3 +1,4 @@
+import { PostData } from "@/app/_types/type";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -26,7 +27,10 @@ export const GET = async (request: NextRequest) => {
       },
     })
 
-    return NextResponse.json({ status: 'OK', posts: posts }, { status: 200, })
+    return NextResponse.json<{
+      status: string;
+      posts: PostData[];
+    }>({ status: 'OK', posts: posts }, { status: 200, })
   } catch (error) {
     if (error instanceof Error)
       return NextResponse.json({ status: error.message }, { status: 400})
@@ -39,7 +43,7 @@ export const GET = async (request: NextRequest) => {
 type CreatePostRequestBody = {
   title: string,
   content: string,
-  categories: { id: number }[],
+  categories: { id: number; name: string }[];
   thumbnailUrl: string,
 }
 
@@ -75,7 +79,11 @@ export const POST = async (request: NextRequest, context: any) => {
     }
 
     // レスポンスを返す
-    return NextResponse.json({
+    return NextResponse.json<{
+      status: string;
+      message: string;
+      id: number;
+    }>({
       status: 'OK',
       message: '作成しました',
       id: newPost.id,

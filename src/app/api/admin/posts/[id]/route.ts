@@ -1,4 +1,5 @@
 import Categories from "@/app/_components/Categories";
+import { PostData } from "@/app/_types/type";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,7 +32,14 @@ export const GET = async (
       },
     })
 
-    return NextResponse.json({ status: 'OK', post: post }, { status: 200 })
+    if (!post) {
+      return NextResponse.json({ status: 'Post not found.' }, { status: 404 });
+    }
+
+    return NextResponse.json<{
+      status: string;
+      post: PostData;
+    }>({ status: 'OK', post: post }, { status: 200 })
   } catch (error) {
     if (error instanceof Error) 
       return NextResponse.json({ status: error.message }, { status: 400 })
@@ -70,6 +78,18 @@ export const PUT = async (
         content,
         thumbnailUrl,
       },
+      include: {
+        postCategories: {
+          include: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+              }
+            }
+          }
+        }
+      }
     })
 
     // 一旦記事とカテゴリーの中間テーブルのレコードをすべて削除
@@ -92,7 +112,10 @@ export const PUT = async (
     }
 
     // レスポンスを返す
-    return NextResponse.json({ status: 'OK', post: updatedPost }, { status: 200 })
+    return NextResponse.json<{
+      status: string;
+      post: PostData;
+    }>({ status: 'OK', post: updatedPost }, { status: 200 })
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ status: error.message }, { status: 400 })

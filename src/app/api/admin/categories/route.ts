@@ -1,3 +1,4 @@
+import { CategoryData } from "@/app/_types/type";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,7 +15,10 @@ export const GET = async (request: NextRequest) => {
     })
     
     // レスポンスを返す
-    return NextResponse.json({ status: 'OK', categories }, { status: 200 })
+    return NextResponse.json<{
+      status: string;
+      categories: CategoryData[];
+    }>({ status: 'OK', categories: categories }, { status: 200 })
   } catch (error) {
     if (error instanceof Error) 
       return NextResponse.json({ status: error.message }, { status: 400 })

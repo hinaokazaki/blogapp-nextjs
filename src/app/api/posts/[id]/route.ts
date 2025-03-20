@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
+import { PostData } from '@/app/_types/type'
 
 // prisma client を初期化
 const prisma = new PrismaClient()
@@ -34,8 +35,15 @@ export const GET = async (
       },
     })
 
+    if (!post) {
+      return NextResponse.json({ status: 'Post not found' }, { status: 404 });
+    }
+
     // レスポンスを返す
-    return NextResponse.json({ status: 'OK', post: post }, {status: 200 })
+    return NextResponse.json<{
+      status: String;
+      post: PostData;
+    }>({ status: 'OK', post: post }, {status: 200 })
   } catch (error) {
     if(error instanceof Error) 
       return NextResponse.json({ status: error.message }, { status: 400 })

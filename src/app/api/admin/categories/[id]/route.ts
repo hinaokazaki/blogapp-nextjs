@@ -1,3 +1,4 @@
+import { CategoryData } from "@/app/_types/type";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -53,7 +54,10 @@ export const PUT = async (
       },
     })
 
-    return NextResponse.json({ status: 'OK', category: updatedCategory }, { status: 200 })
+    return NextResponse.json<{
+      status: string;
+      category: CategoryData;
+    }>({ status: 'OK', category: updatedCategory }, { status: 200 })
   } catch (error) {
     if (error instanceof Error) 
       return NextResponse.json({ ststus: error.message }, { status: 400 })
