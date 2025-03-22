@@ -1,35 +1,35 @@
 'use client'
-import { useState, useEffect } from "react"
-import { CreateCategoryRequestBody } from "@/app/_types/type"
-import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { CreateCategoryRequestBody } from "@/app/_types/type";
+import { useRouter } from "next/navigation";
+import CategoryForm from "../_components/CategoryForm";
 
-const CreateCategory: React.FC = () => {
-  const [ category, setCategory ] = useState('')
+
+const CategoryFormRhf: React.FC = () => {
   const router = useRouter();
-  const name = category;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // ページのリロードを防ぐ
+  // フォームを初期化
+  const { 
+    register, // フォームの入力フィールドを登録
+    handleSubmit, // フォーム送信の処理をラップ
+    formState: { errors, isSubmitting } // エラーと送信状態を管理
+  } = useForm<CreateCategoryRequestBody>()
 
-    const categoryData: CreateCategoryRequestBody = {
-      name,
-    }
-
+  // サブミット時の処理、APIでデータを送信してアラート表示
+  const onSubmit = async (data: CreateCategoryRequestBody) => {
     try {
       const res = await fetch('/api/admin/categories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(categoryData),
+        body: JSON.stringify(data),
       })
 
-      const data = await res.json();
       if (!res.ok) {
         throw new Error();
       } else {
         alert('新しいカテゴリーを作成しました。')
-        console.log(data.category);
         router.push('/admin/categories');
       }
     } catch (error) {
@@ -38,22 +38,19 @@ const CreateCategory: React.FC = () => {
     }
   }
 
-  return ( 
+  return (
     <>
       <h1 className="adminTitle">カテゴリー作成</h1>
-      <form className='adminForm'>
-        <label htmlFor="category">カテゴリー名</label>
-        <input 
-          className='adminFormInput'
-          id='category' 
-          type='text' 
-          value={category} 
-          onChange={(e) => setCategory(e.target.value)}
-        />   
-      </form>
-      <button className='adminFormSubmitBtn' type='button' onClick={handleSubmit}>作成</button>
+      <CategoryForm 
+        register={register}
+        handleSubmit={handleSubmit}
+        errors={errors}
+        isSubmitting={isSubmitting}
+        submitFunction={onSubmit}
+      />
+      <button className='adminFormSubmitBtn' form='myForm' type='submit'>作成</button>
     </>
-  );
+  )
 }
 
-export default CreateCategory;
+export default CategoryFormRhf;
