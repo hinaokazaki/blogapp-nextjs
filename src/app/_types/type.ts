@@ -3,8 +3,8 @@ export type PostData = {
   title: string,
   content: string,
   thumbnailUrl: string,
-  createdAt: string,
-  updatedAt: string,
+  createdAt: Date,
+  updatedAt: Date,
   postCategories: {
     category: {
       id: number,
@@ -23,8 +23,8 @@ export type CreatePostRequestBody = {
 export type CategoryData = {
   id: number,
   name: string,
-  createdAt: string,
-  updatedAt: string,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export type CreateCategoryRequestBody = {
@@ -32,8 +32,8 @@ export type CreateCategoryRequestBody = {
 };
 
 export type SelectOptionForCategories = {
-  value: number,
-  label: string,
+  id: number,
+  name: string,
 }
 
 export type SelectedCategoryData = {
@@ -58,18 +58,3 @@ export type CategoriesButtonProps = {
   }[]
 }
 
-// export type MicroCmsPost = {
-//   id: string,
-//   title: string,
-//   content: string,
-//   createdAt: string,
-//   categories: { id: string; name: string }[],
-//   thumbnail: { url: string; height: number; width: number }
-// };
-
-// export type MicroCmsCategory = {
-//   categories: { 
-//     id: string,
-//     name: string
-//   }[]
-// };
