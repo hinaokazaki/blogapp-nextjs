@@ -5,7 +5,7 @@ import { PostData } from "@/app/_types/type"
 import Loading from "@/app/_components/Loading"
 import Link from "next/link"
 
-const adminPosts: React.FC = () => {
+const AdminPosts: React.FC = () => {
   const [ posts, setPosts ] = useState<PostData[]>([])
   const [ isLoading, setIsLoading ] = useState(true)
 
@@ -67,4 +67,4 @@ const adminPosts: React.FC = () => {
   )
 };
 
-export default adminPosts;
+export default AdminPosts;

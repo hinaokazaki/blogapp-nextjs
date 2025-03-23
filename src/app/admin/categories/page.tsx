@@ -5,7 +5,7 @@ import Loading from "@/app/_components/Loading";
 import Link from "next/link";
 import { CategoryData } from "@/app/_types/type";
 
-const adminCategories: React.FC = () => {
+const AdminCategories: React.FC = () => {
   const [ categories, setCategories ] = useState<CategoryData[]>([]);
   const [ isLoading, setIsLoading ] = useState(true);
  
@@ -72,4 +72,4 @@ const adminCategories: React.FC = () => {
   )
 }
 
-export default adminCategories;
+export default AdminCategories;

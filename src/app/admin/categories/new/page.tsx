@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import CategoryForm from "../_components/CategoryForm";
 
 
-const CategoryFormRhf: React.FC = () => {
+const CreateNewCategory: React.FC = () => {
   const router = useRouter();
 
   // フォームを初期化
@@ -53,4 +53,4 @@ const CategoryFormRhf: React.FC = () => {
   )
 }
 
-export default CategoryFormRhf;
+export default CreateNewCategory;

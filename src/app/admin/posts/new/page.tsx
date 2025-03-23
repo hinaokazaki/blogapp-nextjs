@@ -9,7 +9,7 @@ import { SelectOptionForCategories } from '@/app/_types/type';
 import { CategoryData } from '@/app/_types/type';
 import PostForm from '../_components/PostForm';
 
-const CreatePostForm: React.FC = () => {
+const CreateNewPost: React.FC = () => {
   const [ categoryOptions, setCategoryOptions ] = useState<SelectOptionForCategories[]>([])
   const [ isLoading, setIsLoading ] = useState(true);
   const router = useRouter();
@@ -105,4 +105,4 @@ const CreatePostForm: React.FC = () => {
   )
 }
 
-export default CreatePostForm;
+export default CreateNewPost;

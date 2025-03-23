@@ -10,7 +10,7 @@ import { SelectOptionForCategories } from "@/app/_types/type";
 import { CategoryData } from "@/app/_types/type";
 import PostForm from "../_components/PostForm";
 
-const adminPost: React.FC = () => {
+const AdminPost: React.FC = () => {
   const params = useParams();
   const id = params.id
   const router = useRouter();
@@ -181,4 +181,4 @@ const adminPost: React.FC = () => {
   )
 }
 
-export default adminPost;
+export default AdminPost;

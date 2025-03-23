@@ -7,7 +7,7 @@ import Loading from "@/app/_components/Loading"
 import "@/app/globals.css";
 import CategoryForm from "../_components/CategoryForm"
 
-const adminCategory: React.FC = () => {
+const AdminCategory: React.FC = () => {
   const [ isLoading, setIsLoading ] = useState(true);
 
   const params = useParams();
@@ -126,4 +126,4 @@ const adminCategory: React.FC = () => {
   )
 }
 
-export default adminCategory
+export default AdminCategory
