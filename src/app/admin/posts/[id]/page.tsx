@@ -6,8 +6,6 @@ import { useForm } from "react-hook-form";
 import { PostData } from "@/app/_types/type";
 import Loading from "@/app/_components/Loading";
 import { CreatePostRequestBody } from "@/app/_types/type";
-import { SelectOptionForCategories } from "@/app/_types/type";
-import { CategoryData } from "@/app/_types/type";
 import PostForm from "../_components/PostForm";
 
 const AdminPost: React.FC = () => {
@@ -31,7 +29,6 @@ const AdminPost: React.FC = () => {
   } = useForm<CreatePostRequestBody>({defaultValues});
 
   const [ isLoading, setIsLoading ] = useState(true);
-  const [ categoryOptions, setCategoryOptions ] = useState<SelectOptionForCategories[]>([]);
 
   // GET 記事詳細取得処理
   useEffect(() => {
@@ -71,42 +68,6 @@ const AdminPost: React.FC = () => {
   
     fetcher();
   },[])
-
-  // GET: カテゴリー一覧の取得
-    useEffect(() => {
-      const fetcher = async () => {
-        try {
-          const res = await fetch('/api/admin/categories', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-  
-          const result = await res.json();
-          const data: CategoryData[] = result.categories;
-          console.log("APIレスポンス:", data); 
-          if (!res.ok) {
-            throw new Error();
-          } else {
-            setCategoryOptions(
-              data.map((cat) => ({
-                id: cat.id,
-                name: cat.name,
-              }))
-            );
-          }
-       
-        } catch (error) {
-          console.error('エラーが発生しました。', error);
-          setCategoryOptions([])
-        } finally {
-          setIsLoading(false);
-        }
-      }
-  
-      fetcher();
-    },[]);
 
   // PUT 更新処理
   const handleUpdate = async (data: CreatePostRequestBody) => {
@@ -171,7 +132,6 @@ const AdminPost: React.FC = () => {
         errors={errors} 
         submitFunction={handleUpdate}
         control={control}
-        categoryOptions={categoryOptions}
       />
       <div>
         <button className='adminFormSubmitBtn' form='myForm' type="submit">更新</button>

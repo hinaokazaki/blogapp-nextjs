@@ -1,16 +1,13 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { CreatePostRequestBody } from '@/app/_types/type';
 import Loading from '@/app/_components/Loading';
 import "@/app/globals.css";
-import { SelectOptionForCategories } from '@/app/_types/type';
-import { CategoryData } from '@/app/_types/type';
 import PostForm from '../_components/PostForm';
 
 const CreateNewPost: React.FC = () => {
-  const [ categoryOptions, setCategoryOptions ] = useState<SelectOptionForCategories[]>([])
   const [ isLoading, setIsLoading ] = useState(true);
   const router = useRouter();
 
@@ -27,36 +24,6 @@ const CreateNewPost: React.FC = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<CreatePostRequestBody>({defaultValues});
-
-  // GET: カテゴリー一覧の取得
-  useEffect(() => {
-    const fetcher = async () => {
-      try {
-        const res = await fetch('/api/admin/categories', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        const result = await res.json();
-        const data: CategoryData[] = result.categories;
-        console.log("APIレスポンス:", data); 
-        if (!res.ok) {
-          throw new Error();
-        } else {
-          setCategoryOptions(data.map((cat) => ({ id: cat.id, name: cat.name })))
-        }
-   
-      } catch (error) {
-        console.error('エラーが発生しました。', error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetcher();
-  },[]);
 
    // POST: 記事新規作成
   const onSubmit = async (data: CreatePostRequestBody) => {
@@ -98,7 +65,6 @@ const CreateNewPost: React.FC = () => {
         errors={errors} 
         submitFunction={onSubmit}
         control={control}
-        categoryOptions={categoryOptions}
       />
       <button className='adminFormSubmitBtn' form='myForm' type="submit">作成</button>
     </>
