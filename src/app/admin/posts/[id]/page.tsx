@@ -96,27 +96,7 @@ const AdminPost: React.FC = () => {
     }
   }
 
-  // DELETE 削除処理
-  const handleDelete = async () => {
-    try {
-      const res = await fetch(`/api/admin/posts/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      })
-
-      if (res.ok) {
-        alert('記事を削除しました。');
-        router.replace('/admin/posts');
-      } else {
-        throw new Error();
-      }
-    } catch (error) {
-      console.error('Error', error);
-      alert('エラーが発生しました。');
-    }
-  }
+  
 
   if (isLoading) {
     return <Loading/>
@@ -132,11 +112,8 @@ const AdminPost: React.FC = () => {
         errors={errors} 
         submitFunction={handleUpdate}
         control={control}
+        mode='edit'
       />
-      <div>
-        <button className='adminFormSubmitBtn' form='myForm' type="submit">更新</button>
-        <button className='adminFormDeleteBtn' type='button' onClick={handleDelete}>削除</button>
-      </div>
     </>
   )
 }

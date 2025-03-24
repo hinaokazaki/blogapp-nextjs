@@ -1,6 +1,7 @@
 'use client'
 import { Controller, Control } from "react-hook-form"
 import { useState,useEffect } from "react"
+import { useParams, useRouter } from "next/navigation";
 import Select from "react-select"
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister,  } from "react-hook-form"
 import { CreatePostRequestBody } from "@/app/_types/type"
@@ -24,6 +25,7 @@ interface Props {
   errors: FieldErrors<FormValues>;
   submitFunction: (data: CreatePostRequestBody) => Promise<void>;
   control: Control<CreatePostRequestBody, any>;
+  mode: 'new' | 'edit';
 }
 
 const PostForm: React.FC<Props> = ({ 
@@ -33,8 +35,12 @@ const PostForm: React.FC<Props> = ({
   errors, 
   submitFunction,
   control,
+  mode,
 }) => {
 
+  const params = useParams();
+  const id = params.id
+  const router = useRouter();
   const [ isLoading, setIsLoading ] = useState(true);
   const [ categoryOptions, setCategoryOptions ] = useState<SelectOptionForCategories[]>([]);
 
@@ -73,6 +79,28 @@ const PostForm: React.FC<Props> = ({
   
       fetcher();
     },[]);
+
+  // DELETE 削除処理
+    const handleDelete = async () => {
+      try {
+        const res = await fetch(`/api/admin/posts/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+
+        if (res.ok) {
+          alert('記事を削除しました。');
+          router.replace('/admin/posts');
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        console.error('Error', error);
+        alert('エラーが発生しました。');
+      }
+    }
 
   return (
     <form className='adminForm' id='myForm' onSubmit={handleSubmit(submitFunction)}>
@@ -121,6 +149,10 @@ const PostForm: React.FC<Props> = ({
             />
           )}  
         />
+        <div>
+          <button className='adminFormSubmitBtn' form='myForm' type="submit">{mode === 'new' ? '作成' : '更新'}</button>
+          {mode === 'edit' ? <button className='adminFormDeleteBtn' type='button' onClick={handleDelete}>削除</button> : ''}
+        </div>
     </form>
   )
 }

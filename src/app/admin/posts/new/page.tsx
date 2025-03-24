@@ -3,12 +3,10 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { CreatePostRequestBody } from '@/app/_types/type';
-import Loading from '@/app/_components/Loading';
 import "@/app/globals.css";
 import PostForm from '../_components/PostForm';
 
 const CreateNewPost: React.FC = () => {
-  const [ isLoading, setIsLoading ] = useState(true);
   const router = useRouter();
 
   const defaultValues = {
@@ -51,10 +49,6 @@ const CreateNewPost: React.FC = () => {
     }
   }
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   return (
     <>
       <h1 className='adminTitle'>記事作成</h1>
@@ -65,8 +59,8 @@ const CreateNewPost: React.FC = () => {
         errors={errors} 
         submitFunction={onSubmit}
         control={control}
+        mode='new'
       />
-      <button className='adminFormSubmitBtn' form='myForm' type="submit">作成</button>
     </>
   )
 }
