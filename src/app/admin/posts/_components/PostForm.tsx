@@ -7,6 +7,7 @@ import { FieldErrors, UseFormHandleSubmit, UseFormRegister,  } from "react-hook-
 import { CreatePostRequestBody } from "@/app/_types/type"
 import { SelectOptionForCategories } from "@/app/_types/type"
 import { CategoryData } from "@/app/_types/type";
+import Loading from "@/app/_components/Loading";
 
 type FormValues = {
   title: string,
@@ -101,6 +102,10 @@ const PostForm: React.FC<Props> = ({
         alert('エラーが発生しました。');
       }
     }
+
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <form className='adminForm' id='myForm' onSubmit={handleSubmit(submitFunction)}>
