@@ -2,42 +2,36 @@
 import React from 'react';
 import classes from './page.module.css';
 import { useState, useEffect } from 'react';
-import { MicroCmsPost } from '@/app/_types/type';
+import { PostData } from '@/app/_types/type';
 import Link from 'next/link';
 import Categories from '@/app/_components/Categories';
 import Text from '@/app/_components/Text';
 import Loading from './_components/Loading';
 import NotFound from './_components/Not-found';
 
-type ApiRes = {
-  posts: MicroCmsPost[]
-}
-
 const Home: React.FC = () => {
-  const [posts, setPosts] = useState<MicroCmsPost[]>([]);
+  const [posts, setPosts] = useState<PostData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetcher = async () => {
       // 管理画面で取得したエンドポイントを入力
-      const res = await fetch('https://kvjqi36xjz.microcms.io/api/v1/posts', { 
-        // fetch関数の第二引数にheadersを設定でき、その中にAPIキーを設定
+      const res = await fetch('/api/posts', { 
+        method: 'GET',
         headers: {
-          // 管理画面で取得したAPIキーを入力してください。
-          'X-MICROCMS-API-KEY': process.env
-            .NEXT_PUBLIC_MICROCMS_API_KEY as string,
+          'Content-Type': 'application/json'
         },
       })
-      const { contents } = await res.json()
-      console.log(contents);
-      setPosts(contents)
+
+      const data = await res.json()
+      setPosts(data.posts)
+      console.log(data.posts);
       setIsLoading(false);
     };
 
     fetcher(); 
 
   },[])
-
 
   // 本文のテキストに文字制限をかけた後にhtmlとして表示するようにする関数
   const maxLength: number = 60;
@@ -62,7 +56,7 @@ const Home: React.FC = () => {
                   <div className={classes.homeBox}>
                     <div className={classes.homeBoxNav}>
                       <div className={classes.homeBoxNavDate}>{new Date(elem.createdAt).toLocaleDateString()}</div>
-                      <Categories categories={elem.categories}/>
+                      <Categories postCategories={elem.postCategories}/>
                     </div>
                     <div className={classes.homeBoxTexts}>
                       <h1 className={classes.homeBoxTextsTitle}>APIで取得した{elem.title}</h1>

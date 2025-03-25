@@ -1,15 +1,60 @@
-export type MicroCmsPost = {
-  id: string,
+export type PostData = {
+  id: number,
   title: string,
   content: string,
-  createdAt: string,
-  categories: { id: string; name: string }[],
-  thumbnail: { url: string; height: number; width: number }
+  thumbnailUrl: string,
+  createdAt: Date,
+  updatedAt: Date,
+  postCategories: {
+    category: {
+      id: number,
+      name: string,
+    }
+  }[],
 };
 
-export type MicroCmsCategory = {
-  categories: { 
-    id: string,
-    name: string
-  }[]
+export type CreatePostRequestBody = {
+  title: string;
+  content: string;
+  categories: { id: number; name: string }[];
+  thumbnailUrl: string;
 };
+
+export type CategoryData = {
+  id: number,
+  name: string,
+  createdAt: Date,
+  updatedAt: Date,
+}
+
+export type CreateCategoryRequestBody = {
+  name: string,
+};
+
+export type SelectOptionForCategories = {
+  id: number,
+  name: string,
+}
+
+export type SelectedCategoryData = {
+  category: {
+    id: number,
+    name: string,
+  }
+}
+ 
+// Front-end Category Button
+export type Category = {
+  id: number,
+  name: string,
+}
+
+export type CategoriesButtonProps = {
+  postCategories: {
+    category: {
+      id: number,
+      name: string,
+    }
+  }[]
+}
+
