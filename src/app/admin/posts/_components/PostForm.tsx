@@ -7,7 +7,6 @@ import { FieldErrors, UseFormHandleSubmit, UseFormRegister,  } from "react-hook-
 import { CreatePostRequestBody } from "@/app/_types/type"
 import { SelectOptionForCategories } from "@/app/_types/type"
 import { CategoryData } from "@/app/_types/type";
-import Loading from "@/app/_components/Loading";
 
 type FormValues = {
   title: string,
@@ -103,15 +102,11 @@ const PostForm: React.FC<Props> = ({
       }
     }
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   return (
     <form className='adminForm' id='myForm' onSubmit={handleSubmit(submitFunction)}>
       <label className='adminFormTitle' htmlFor='title'>タイトル</label>
       <input
-        className='adminFormInput' id='title' type="text" disabled={isSubmitting}
+        className='adminFormInput' id='title' type="text" disabled={isSubmitting || isLoading}
         {...register('title', {
           required: ' タイトルを入力して下さい。',
           maxLength: {
@@ -122,7 +117,7 @@ const PostForm: React.FC<Props> = ({
       />
       <div>{errors.title?.message ??  ''}</div>
       <label className='adminFormTitle' htmlFor='title'>内容</label>
-      <textarea className='adminFormInputContent' id='content' disabled={isSubmitting}
+      <textarea className='adminFormInputContent' id='content' disabled={isSubmitting || isLoading}
         {...register('content', {
           required: '本文を入力してください。',
           maxLength: {
@@ -133,7 +128,7 @@ const PostForm: React.FC<Props> = ({
       />
       <div>{errors.content?.message ?? ''}</div>
       <label className='adminFormTitle' htmlFor='thumbnailUrl'>サムネイルURL</label>
-      <input className='adminFormInput' id='thumbnailUrl' type="text" disabled={isSubmitting}
+      <input className='adminFormInput' id='thumbnailUrl' type="text" disabled={isSubmitting || isLoading}
         {...register('thumbnailUrl', {
           required: '画像URLを入力してください。',
         })}
@@ -141,6 +136,7 @@ const PostForm: React.FC<Props> = ({
       <div>{errors.thumbnailUrl?.message ?? ''}</div>
       <label className='adminFormTitle' htmlFor='categories'>カテゴリー</label>
         <Controller 
+          disabled={isSubmitting || isLoading}
           name='categories'
           control={control}
           render={({field}) => (
