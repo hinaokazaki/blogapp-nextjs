@@ -96,8 +96,6 @@ const AdminPost: React.FC = () => {
     }
   }
 
-  
-
   if (isLoading) {
     return <Loading/>
   }
