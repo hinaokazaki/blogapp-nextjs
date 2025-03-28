@@ -1,7 +1,11 @@
+'use client'
 import Link from "next/link";
 import { ReactNode } from "react";
+import useRouteGuard from "./_hooks/useRouteGuard";
 
 export default function SideBarNavigation({ children }: { children: ReactNode}) {
+  useRouteGuard();
+
   return (
     <>
       <main>
