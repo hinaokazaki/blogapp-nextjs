@@ -4,18 +4,24 @@ import { useState, useEffect } from "react"
 import { PostData } from "@/app/_types/type"
 import Loading from "@/app/_components/Loading"
 import Link from "next/link"
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession"
 
 const AdminPosts: React.FC = () => {
   const [ posts, setPosts ] = useState<PostData[]>([])
   const [ isLoading, setIsLoading ] = useState(true)
 
+  const { token } = useSupabaseSession()
+
   useEffect(() => {
+    if (!token) return
+
     const fetcher = async () => {
       try {
         const res = await fetch('/api/admin/posts', {
           method: 'GET',
           headers: {
-            'content-Type': 'application/json'
+            'content-Type': 'application/json',
+            Authorization: token,
           },
          })
 
@@ -31,7 +37,7 @@ const AdminPosts: React.FC = () => {
     };
 
     fetcher();
-  },[]);
+  },[token]);
 
   if (isLoading) {
     return <Loading/>

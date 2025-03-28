@@ -7,11 +7,13 @@ import { PostData } from "@/app/_types/type";
 import Loading from "@/app/_components/Loading";
 import { CreatePostRequestBody } from "@/app/_types/type";
 import PostForm from "../_components/PostForm";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 const AdminPost: React.FC = () => {
   const params = useParams();
   const id = params.id
   const router = useRouter();
+  const { token } = useSupabaseSession();
 
   const defaultValues = {
     title: '',
@@ -32,12 +34,15 @@ const AdminPost: React.FC = () => {
 
   // GET 記事詳細取得処理
   useEffect(() => {
+    if (!token) return
+
     const fetcher = async () => {
       try {
         const res = await fetch(`/api/admin/posts/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            authorization: token,
           }
         })
   
@@ -67,15 +72,18 @@ const AdminPost: React.FC = () => {
     }
   
     fetcher();
-  },[])
+  },[token])
 
   // PUT 更新処理
   const handleUpdate = async (data: CreatePostRequestBody) => {
+    if (!token) return 
+
     try {
       const res = await fetch(`/api/admin/posts/${id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          authorization: token,
         },
         body: JSON.stringify(data)
       })

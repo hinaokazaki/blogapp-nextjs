@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form"
 import { CreateCategoryRequestBody } from "@/app/_types/type";
 import { useRouter } from "next/navigation";
 import CategoryForm from "../_components/CategoryForm";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 
 const CreateNewCategory: React.FC = () => {
   const router = useRouter();
+  const { token } = useSupabaseSession();
 
   // フォームを初期化
   const { 
@@ -17,11 +19,14 @@ const CreateNewCategory: React.FC = () => {
 
   // サブミット時の処理、APIでデータを送信してアラート表示
   const onSubmit = async (data: CreateCategoryRequestBody) => {
+    if (!token) return
+
     try {
       const res = await fetch('/api/admin/categories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          authorization: token,
         },
         body: JSON.stringify(data),
       })

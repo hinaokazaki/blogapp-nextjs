@@ -13,7 +13,7 @@ export const useSupabaseSession = ()  => {
       const {
         data: { session },
       } = await supabase.auth.getSession()
-      setSession(session as Session | null) //型エラー
+      setSession(session) //型エラー
       // console.log(session);
       setToken(session?.access_token || null)
       setIsLoading(false)

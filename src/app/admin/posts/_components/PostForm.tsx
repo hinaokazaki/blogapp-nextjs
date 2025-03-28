@@ -7,6 +7,7 @@ import { FieldErrors, UseFormHandleSubmit, UseFormRegister,  } from "react-hook-
 import { CreatePostRequestBody } from "@/app/_types/type"
 import { SelectOptionForCategories } from "@/app/_types/type"
 import { CategoryData } from "@/app/_types/type";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 type FormValues = {
   title: string,
@@ -41,17 +42,22 @@ const PostForm: React.FC<Props> = ({
   const params = useParams();
   const id = params.id
   const router = useRouter();
+  const { token } = useSupabaseSession();
+
   const [ isLoading, setIsLoading ] = useState(true);
   const [ categoryOptions, setCategoryOptions ] = useState<SelectOptionForCategories[]>([]);
 
   // GET: カテゴリー一覧の取得
     useEffect(() => {
+      if (!token) return 
+
       const fetcher = async () => {
         try {
           const res = await fetch('/api/admin/categories', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
+              authorization: token,
             },
           });
   
@@ -78,15 +84,18 @@ const PostForm: React.FC<Props> = ({
       }
   
       fetcher();
-    },[]);
+    },[token]);
 
   // DELETE 削除処理
     const handleDelete = async () => {
+      if (!token) return
+
       try {
         const res = await fetch(`/api/admin/posts/${id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
+            authorization: token,
           }
         })
 

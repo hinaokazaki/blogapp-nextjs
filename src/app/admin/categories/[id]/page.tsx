@@ -6,6 +6,7 @@ import { CreateCategoryRequestBody } from "@/app/_types/type"
 import Loading from "@/app/_components/Loading"
 import "@/app/globals.css";
 import CategoryForm from "../_components/CategoryForm"
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession"
 
 const AdminCategory: React.FC = () => {
   const [ isLoading, setIsLoading ] = useState(true);
@@ -13,6 +14,7 @@ const AdminCategory: React.FC = () => {
   const params = useParams();
   const id = params.id
   const router = useRouter();
+  const { token } = useSupabaseSession();
 
   const defaultValues = {
     name: '',
@@ -27,12 +29,15 @@ const AdminCategory: React.FC = () => {
 
   // GET: カテゴリー詳細情報取得
   useEffect(() => {
+    if (!token) return 
+    
     const fetcher = async () => {
       try {
         const res = await fetch(`/api/admin/categories/${id}`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: token,
           },
         })
 
@@ -52,15 +57,18 @@ const AdminCategory: React.FC = () => {
     }
 
     fetcher();
-  },[])
+  },[token])
 
   // PUT: カテゴリー更新
   const handleUpdate = async (data: CreateCategoryRequestBody) => {
+    if (!token) return 
+
     try {
       const res = await fetch(`/api/admin/categories/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          authorization: token,
         },
         body: JSON.stringify(data),
       });
@@ -81,12 +89,15 @@ const AdminCategory: React.FC = () => {
 
   // DELETE: カテゴリー削除
   const handleDelete = () => {
+    if (!token) return
+
     const fetcher = async () => {
       try {
         const res = await fetch(`/api/admin/categories/${id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
+            authorization: token,
           },
         })
 
