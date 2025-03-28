@@ -4,18 +4,24 @@ import { useState, useEffect } from "react";
 import Loading from "@/app/_components/Loading";
 import Link from "next/link";
 import { CategoryData } from "@/app/_types/type";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 const AdminCategories: React.FC = () => {
   const [ categories, setCategories ] = useState<CategoryData[]>([]);
   const [ isLoading, setIsLoading ] = useState(true);
+
+  const { token } = useSupabaseSession();
  
   useEffect(() => {
+    if (!token) return
+
     const fetcher = async () => {
       try {
         const res = await fetch('/api/admin/categories', {
           method: 'GET',
           headers: {
-            'Content-type': 'application/json'
+            'Content-type': 'application/json',
+            authorization: token,
           },
         })
 
@@ -36,7 +42,7 @@ const AdminCategories: React.FC = () => {
     }
 
     fetcher();
-  },[])
+  },[token])
 
   if (isLoading) {
     return <Loading />

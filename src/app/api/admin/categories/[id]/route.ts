@@ -1,6 +1,7 @@
 import { CategoryData } from "@/app/_types/type";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/utils/supabase";
 
 const prisma = new PrismaClient()
 
@@ -10,6 +11,12 @@ export const GET = async (
   { params }: { params: { id: string }}
 ) => {
   const { id } = params
+
+  // tokenの確認
+  const token = request.headers.get('Authorization') ?? ''
+  const { error } = await supabase.auth.getUser(token)
+  if (error) 
+    return NextResponse.json({ status: error.message },{ status: 400 })
 
   try {
     const category = await prisma.category.findUnique({
@@ -43,6 +50,12 @@ export const PUT = async (
   // request bodyから必要なデータを取得
   const { name }: UpdateCategoryRequestBody = await request.json()
 
+  // tokenの確認
+  const token = request.headers.get('Authorization') ?? ''
+  const { error } = await supabase.auth.getUser(token)
+  if (error) 
+    return NextResponse.json({ status: error.message }, { status: 400 })
+
   try {
     // idを指定してcategoryを更新
     const updatedCategory = await prisma.category.update({
@@ -72,6 +85,12 @@ export const DELETE = async (
   { params }: { params: { id: string } }
 ) => {
   const { id } = params
+
+  // tokenの確認
+  const token = request.headers.get('Authorization') ?? ''
+  const { error } = await supabase.auth.getUser(token)
+  if (error) 
+    return NextResponse.json({ status: error.message }, { status: 400 })
 
   try {
     await prisma.category.delete({
