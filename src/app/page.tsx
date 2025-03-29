@@ -23,9 +23,10 @@ const Home: React.FC = () => {
         },
       })
 
-      const data = await res.json()
-      setPosts(data.posts)
-      console.log(data.posts);
+      const result = await res.json()
+      const data: PostData[] = result.posts
+      setPosts(data)
+      console.log(data);
       setIsLoading(false);
     };
 

@@ -56,7 +56,7 @@ type CreatePostRequestBody = {
   title: string,
   content: string,
   categories: { id: number; name: string }[];
-  thumbnailUrl: string,
+  thumbnailImageKey: string,
 }
 
 // post requestの処理
@@ -73,14 +73,14 @@ export const POST = async (request: NextRequest, context: any) => {
     const body = await request.json()
 
     // bodyの中から必要なデータの取り出し、分割代入
-    const { title, content, categories, thumbnailUrl }: CreatePostRequestBody = body
+    const { title, content, categories, thumbnailImageKey }: CreatePostRequestBody = body
 
     // 記事をDBに作成
     const newPost = await prisma.post.create({
       data: {
         title,
         content,
-        thumbnailUrl,
+        thumbnailImageKey,
       },
     })
 

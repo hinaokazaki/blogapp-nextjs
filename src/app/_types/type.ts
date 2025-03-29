@@ -2,7 +2,7 @@ export type PostData = {
   id: number,
   title: string,
   content: string,
-  thumbnailUrl: string,
+  thumbnailImageKey: string,
   createdAt: Date,
   updatedAt: Date,
   postCategories: {
@@ -17,7 +17,7 @@ export type CreatePostRequestBody = {
   title: string;
   content: string;
   categories: { id: number; name: string }[];
-  thumbnailUrl: string;
+  thumbnailImageKey: string;
 };
 
 export type CategoryData = {

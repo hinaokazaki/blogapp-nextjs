@@ -18,7 +18,7 @@ const PostUi: React.FC<Props> = ({ post }) => {
           <Image 
             height={400}
             width={800}
-            src={post.thumbnailUrl} 
+            src={post.thumbnailImageKey} 
             className={classes.postsImg} 
             alt={post.title}
           />
