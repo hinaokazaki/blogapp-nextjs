@@ -1,18 +1,20 @@
 'use client'
 import { Controller, Control } from "react-hook-form"
-import { useState,useEffect } from "react"
+import { useState,useEffect, ChangeEvent } from "react"
 import { useParams, useRouter } from "next/navigation";
 import Select from "react-select"
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister,  } from "react-hook-form"
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormSetValue  } from "react-hook-form"
 import { CreatePostRequestBody } from "@/app/_types/type"
 import { SelectOptionForCategories } from "@/app/_types/type"
 import { CategoryData } from "@/app/_types/type";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { supabase } from "@/utils/supabase";
+import { v4 as uuidv4 } from 'uuid';
 
 type FormValues = {
   title: string,
   content: string,
-  thumbnailUrl: string,
+  thumbnailImageKey: string,
   categories: {
     id: number;
     name: string;
@@ -23,6 +25,7 @@ interface Props {
   handleSubmit: UseFormHandleSubmit<FormValues>;
   isSubmitting: boolean;
   register: UseFormRegister<FormValues>;
+  setValue: UseFormSetValue<FormValues>
   errors: FieldErrors<FormValues>;
   submitFunction: (data: CreatePostRequestBody) => Promise<void>;
   control: Control<CreatePostRequestBody, any>;
@@ -33,6 +36,7 @@ const PostForm: React.FC<Props> = ({
   handleSubmit, 
   isSubmitting, 
   register, 
+  setValue,
   errors, 
   submitFunction,
   control,
@@ -44,8 +48,9 @@ const PostForm: React.FC<Props> = ({
   const router = useRouter();
   const { token } = useSupabaseSession();
 
-  const [ isLoading, setIsLoading ] = useState(true);
-  const [ categoryOptions, setCategoryOptions ] = useState<SelectOptionForCategories[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [categoryOptions, setCategoryOptions] = useState<SelectOptionForCategories[]>([]);
+  // const [thumbnailImageKey, setThumbnailImageKey] = useState('');
 
   // GET: カテゴリー一覧の取得
     useEffect(() => {
@@ -111,6 +116,35 @@ const PostForm: React.FC<Props> = ({
       }
     }
 
+    // 画像挿入処理
+    const handleImageChange = async (
+      e: ChangeEvent<HTMLInputElement>,
+    ) : Promise<void> => {
+      if (!e.target.files || e.target.files.length == 0) {
+        return // 画像が選択されていないのでreturn
+      }
+
+      const file = e.target.files[0] // 選択された画像を取得
+      const filePath = `private/${uuidv4()}` // ファイルパスを指定
+
+      // supabaseに画像をアップロード
+      const { data, error } = await supabase.storage
+        .from('post-thumbnail') // ここでバケット名を指定
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      // アップロードに失敗したらエラーを表示して終了
+      if (error) {
+        alert(error.message)
+        return
+      }
+
+      setValue('thumbnailImageKey', data.path)
+
+    }
+
   return (
     <form className='adminForm' id='myForm' onSubmit={handleSubmit(submitFunction)}>
       <label className='adminFormTitle' htmlFor='title'>タイトル</label>
@@ -136,13 +170,19 @@ const PostForm: React.FC<Props> = ({
         })}
       />
       <div>{errors.content?.message ?? ''}</div>
-      <label className='adminFormTitle' htmlFor='thumbnailUrl'>サムネイルURL</label>
-      <input className='adminFormInput' id='thumbnailUrl' type="text" disabled={isSubmitting || isLoading}
-        {...register('thumbnailUrl', {
-          required: '画像URLを入力してください。',
+      <label className='adminFormTitle' htmlFor='thumbnailImageKey'>サムネイルURL</label>
+      <input 
+        className='adminFormInput' 
+        id='thumbnailImageKey' 
+        disabled={isSubmitting || isLoading}
+        type="file" 
+        accept="image/*"
+        {...register('thumbnailImageKey', {
+          required: '画像ファイルを選択してください。',
+          onChange: handleImageChange,
         })}
       />
-      <div>{errors.thumbnailUrl?.message ?? ''}</div>
+      <div>{errors.thumbnailImageKey?.message ?? ''}</div>
       <label className='adminFormTitle' htmlFor='categories'>カテゴリー</label>
         <Controller 
           disabled={isSubmitting || isLoading}

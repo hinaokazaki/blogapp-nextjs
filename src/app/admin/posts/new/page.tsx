@@ -13,12 +13,13 @@ const CreateNewPost: React.FC = () => {
   const defaultValues = {
     title: '',
     content: '',
-    thumbnailUrl: '',
+    thumbnailImageKey: '',
     categories: [],
   }
 
   const {
     register,
+    setValue,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -60,6 +61,7 @@ const CreateNewPost: React.FC = () => {
         handleSubmit={handleSubmit} 
         isSubmitting={isSubmitting}
         register={register} 
+        setValue={setValue}
         errors={errors} 
         submitFunction={onSubmit}
         control={control}

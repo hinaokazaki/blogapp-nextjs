@@ -18,12 +18,13 @@ const AdminPost: React.FC = () => {
   const defaultValues = {
     title: '',
     content: '',
-    thumbnailUrl: '',
+    thumbnailImageKey: '',
     categories: [],
   };
 
   const {
     register,
+    setValue,
     control,
     handleSubmit,
     reset,
@@ -54,7 +55,7 @@ const AdminPost: React.FC = () => {
           reset({
             title: data.title,
             content: data.content,
-            thumbnailUrl: data.thumbnailUrl,
+            thumbnailImageKey: data.thumbnailImageKey,
             categories: data.postCategories.map((cat) => ({
               id: cat.category.id,
               name: cat.category.name,
@@ -115,6 +116,7 @@ const AdminPost: React.FC = () => {
         handleSubmit={handleSubmit} 
         isSubmitting={isSubmitting}
         register={register} 
+        setValue={setValue}
         errors={errors} 
         submitFunction={handleUpdate}
         control={control}
