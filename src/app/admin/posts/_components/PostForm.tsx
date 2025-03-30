@@ -172,15 +172,12 @@ const PostForm: React.FC<Props> = ({
       <div>{errors.content?.message ?? ''}</div>
       <label className='adminFormTitle' htmlFor='thumbnailImageKey'>サムネイルURL</label>
       <input 
-        className='adminFormInput' 
-        id='thumbnailImageKey' 
-        disabled={isSubmitting || isLoading}
+        className="adminFormInput" 
+        id="thumbnailImageKey" 
+        disabled={isSubmitting || isLoading} 
         type="file" 
-        accept="image/*"
-        {...register('thumbnailImageKey', {
-          required: '画像ファイルを選択してください。',
-          onChange: handleImageChange,
-        })}
+        accept="image/*" 
+        onChange={handleImageChange} 
       />
       <div>{errors.thumbnailImageKey?.message ?? ''}</div>
       <label className='adminFormTitle' htmlFor='categories'>カテゴリー</label>
