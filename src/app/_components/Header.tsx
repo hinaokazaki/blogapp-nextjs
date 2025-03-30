@@ -24,7 +24,7 @@ export const Header: React.FC = () => {
         <div>
           {session ? (
             <>
-              <Link href='/admin' className='headerLink'>
+              <Link href='/admin/posts' className='headerLink'>
                 管理画面
               </Link>
               <button onClick={handleLogout}>ログアウト</button>
