@@ -16,25 +16,26 @@ export const Header: React.FC = () => {
   const { session, isLoading } = useSupabaseSession()
 
   return (
-    <header className="nav">
-      <Link href='/' className='headerLink'>
+    <header className="py-4 bg-[#333] flex justify-between">
+      <Link href='/' className='text-white text-xl font-bold mx-8 py-2 px-4'>
         Blog
       </Link>
       {!isLoading && (
-        <div>
+        <div className="flex">
           {session ? (
             <>
-              <Link href='/admin/posts' className='headerLink'>
+              <Link href='/admin/posts' className='text-white text-xl font-bold mr-8 py-2 px-4'>
                 管理画面
               </Link>
-              <button onClick={handleLogout}>ログアウト</button>
+              <button className='text-white text-xl font-bold mr-8 py-2 px-4'
+                onClick={handleLogout}>ログアウト</button>
             </>
           ) : (
             <>
-              <Link href='/contact' className='headerLink'>
+              <Link href='/contact' className='text-white text-xl font-bold mr-8 py-2 px-4'>
                 お問い合わせ
               </Link>
-              <Link href='/login' className='headerLink'>
+              <Link href='/login' className='text-white text-xl font-bold mr-8 py-2 px-4'>
                 ログイン
               </Link>
             </>

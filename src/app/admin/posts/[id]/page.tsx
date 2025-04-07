@@ -111,7 +111,7 @@ const AdminPost: React.FC = () => {
 
   return (
     <>
-      <h1 className='adminTitle'>記事編集</h1>
+      <h1 className='text-2xl text-[#333] font-bold mb-4'>記事編集</h1>
       <PostForm 
         handleSubmit={handleSubmit} 
         isSubmitting={isSubmitting}

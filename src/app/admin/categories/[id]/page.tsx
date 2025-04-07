@@ -87,52 +87,21 @@ const AdminCategory: React.FC = () => {
     }
   }
 
-  // DELETE: カテゴリー削除
-  const handleDelete = () => {
-    if (!token) return
-
-    const fetcher = async () => {
-      try {
-        const res = await fetch(`/api/admin/categories/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: token,
-          },
-        })
-
-        if (!res.ok) {
-          throw new Error();
-        } else {
-          alert('カテゴリーを削除しました');
-          router.replace('/admin/categories');
-        }
-      } catch (error) {
-        console.error('エラーが発生しました。', error);
-      }
-    }
-
-    fetcher();
-  }
-
   if (isLoading) {
     return <Loading />
   }
 
   return (
     <>
-      <h1 className="adminTitle">カテゴリー編集</h1>
+      <h1 className="text-2xl text-[#333] font-bold mb-4">カテゴリー編集</h1>
       <CategoryForm 
         register={register}
         handleSubmit={handleSubmit}
         errors={errors}
         isSubmitting={isSubmitting}
         submitFunction={handleUpdate}
+        mode='edit'
       />
-      <div>
-        <button className='adminFormSubmitBtn' form='myForm' type="submit" >更新</button>
-        <button className='adminFormDeleteBtn' type="button" onClick={handleDelete}>削除</button>
-      </div>
     </>
   )
 }

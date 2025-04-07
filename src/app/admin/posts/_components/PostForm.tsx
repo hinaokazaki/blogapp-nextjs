@@ -146,10 +146,10 @@ const PostForm: React.FC<Props> = ({
     }
 
   return (
-    <form className='adminForm' id='myForm' onSubmit={handleSubmit(submitFunction)}>
-      <label className='adminFormTitle' htmlFor='title'>タイトル</label>
+    <form className='w-[100%] flex flex-col' id='myForm' onSubmit={handleSubmit(submitFunction)}>
+      <label className='text-base text-[#4d4f5b]' htmlFor='title'>タイトル</label>
       <input
-        className='adminFormInput' id='title' type="text" disabled={isSubmitting || isLoading}
+        className='mt-1 mb-4 min-h-[30px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg' id='title' type="text" disabled={isSubmitting || isLoading}
         {...register('title', {
           required: ' タイトルを入力して下さい。',
           maxLength: {
@@ -159,8 +159,8 @@ const PostForm: React.FC<Props> = ({
         })}
       />
       <div>{errors.title?.message ??  ''}</div>
-      <label className='adminFormTitle' htmlFor='title'>内容</label>
-      <textarea className='adminFormInputContent' id='content' disabled={isSubmitting || isLoading}
+      <label className='text-base text-[#4d4f5b]' htmlFor='title'>内容</label>
+      <textarea className='mt-1 mb-4 min-h-[60px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg' id='content' disabled={isSubmitting || isLoading}
         {...register('content', {
           required: '本文を入力してください。',
           maxLength: {
@@ -170,9 +170,9 @@ const PostForm: React.FC<Props> = ({
         })}
       />
       <div>{errors.content?.message ?? ''}</div>
-      <label className='adminFormTitle' htmlFor='thumbnailImageKey'>サムネイルURL</label>
+      <label className='text-base text-[#4d4f5b]' htmlFor='thumbnailImageKey'>サムネイルURL</label>
       <input 
-        className="adminFormInput" 
+        className="mt-1 mb-4 min-h-[30px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg" 
         id="thumbnailImageKey" 
         disabled={isSubmitting || isLoading} 
         type="file" 
@@ -180,14 +180,14 @@ const PostForm: React.FC<Props> = ({
         onChange={handleImageChange} 
       />
       <div>{errors.thumbnailImageKey?.message ?? ''}</div>
-      <label className='adminFormTitle' htmlFor='categories'>カテゴリー</label>
+      <label className='text-base text-[#4d4f5b]' htmlFor='categories'>カテゴリー</label>
         <Controller 
           disabled={isSubmitting || isLoading}
           name='categories'
           control={control}
           render={({field}) => (
             <Select
-              className='adminFormInput'
+              className='mt-1 mb-4 min-h-[30px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg'
               {...field}
               isMulti
               options={categoryOptions}
@@ -197,8 +197,13 @@ const PostForm: React.FC<Props> = ({
           )}  
         />
         <div>
-          <button className='adminFormSubmitBtn' form='myForm' type="submit">{mode === 'new' ? '作成' : '更新'}</button>
-          {mode === 'edit' ? <button className='adminFormDeleteBtn' type='button' onClick={handleDelete}>削除</button> : ''}
+          <button 
+          className='w-[80px] mt-[10px] pt-2 px-4 pb-[10px] text-[rgb(255,255,255)] 
+          text-lg bg-[#4085fd] border-0 rounded-lg font-bold cursor-pointer' 
+          form='myForm' type="submit">{mode === 'new' ? '作成' : '更新'}</button>
+          {mode === 'edit' ? <button className='w-[80px] mt-[10px] ml-[10px] pt-2 px-4 pb-[10px] 
+          text-[rgb(255,255,255)] text-lg bg-[#fd4d40] border-0 rounded-lg font-bold 
+          cursor-pointer' type='button' onClick={handleDelete}>削除</button> : ''}
         </div>
     </form>
   )

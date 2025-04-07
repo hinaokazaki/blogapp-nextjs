@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import classes from './page.module.css';
 import { useState, useEffect } from 'react';
 import { PostData } from '@/app/_types/type';
 import Link from 'next/link';
@@ -48,19 +47,19 @@ const Home: React.FC = () => {
   
   return (
     <>
-      <main id='main'>
+      <main id='main' className='my-[40px] mx-auto'>
         {posts.map((elem) => ( 
           <React.Fragment key={elem.id}>
-            <div className={classes.homeMain}>
-              <div className={classes.homeBoxes}>
-                <Link className={classes.postLink} href={`/posts/${elem.id}`}>
-                  <div className={classes.homeBox}>
-                    <div className={classes.homeBoxNav}>
-                      <div className={classes.homeBoxNavDate}>{new Date(elem.createdAt).toLocaleDateString()}</div>
+            <div className='max-w-[1000px] m-auto'>
+              <div className='px-4'>
+                <Link className='no-underline block text-[#222]' href={`/posts/${elem.id}`}>
+                  <div className='max-w-[100%] highet-auto mt-12 mx-auto mb-0 flex flex-col border-[1px] border-solid border-[#ccc]'>
+                    <div className='pt-4 px-4 flex justify-between'>
+                      <div className='text-[#ccc]'>{new Date(elem.createdAt).toLocaleDateString()}</div>
                       <Categories postCategories={elem.postCategories}/>
                     </div>
-                    <div className={classes.homeBoxTexts}>
-                      <h1 className={classes.homeBoxTextsTitle}>APIで取得した{elem.title}</h1>
+                    <div className='mb-[5%] ml-[5%]'>
+                      <h1 className='text-2xl text-extralight'>APIで取得した{elem.title}</h1>
                       <Text content={fixContentsLength(elem.content)}/>
                     </div>
                   </div>

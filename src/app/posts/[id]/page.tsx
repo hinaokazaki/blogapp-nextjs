@@ -41,7 +41,7 @@ const Posts: React.FC = () => {
   
   return (
     <>
-      <main id='main'>
+      <main id='main' className='my-[40px] mx-auto'>
         <PostUi post={post} />
       </main>
     </>

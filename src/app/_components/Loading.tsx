@@ -2,7 +2,7 @@
 
 const Loading: React.FC = () => {
   return (
-    <div className='loadingMessage'>読み込み中...</div> 
+    <div className='mt-5 text-xl text-center'>読み込み中...</div> 
   );
 }
 

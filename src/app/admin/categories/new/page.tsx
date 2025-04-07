@@ -45,15 +45,15 @@ const CreateNewCategory: React.FC = () => {
 
   return (
     <>
-      <h1 className="adminTitle">カテゴリー作成</h1>
+      <h1 className="text-2xl text-[#333] font-bold mb-4">カテゴリー作成</h1>
       <CategoryForm 
         register={register}
         handleSubmit={handleSubmit}
         errors={errors}
         isSubmitting={isSubmitting}
         submitFunction={onSubmit}
+        mode='new'
       />
-      <button className='adminFormSubmitBtn' form='myForm' type='submit'>作成</button>
     </>
   )
 }

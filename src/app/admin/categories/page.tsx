@@ -52,22 +52,26 @@ const AdminCategories: React.FC = () => {
     <>
       <main>
         <div>
-          <div className="adminSubMenu">
-            <h1 className='adminTitle'>カテゴリー一覧</h1>
-            <Link className='adminCreateButton' href={'/admin/categories/new'}>新規作成</Link>
+          <div className="flex justify-between">
+            <h1 className='text-2xl text-[#333] font-bold'>カテゴリー一覧</h1>
+            <Link className='mx-4 w-[100px] tezt--lg text-lg/2.4 text-center block 
+              no-underline py-2 px-4 text-[rgb(255,255,255)] bg-[rgb(31,41,55)] 
+              border-0 rounded-lg font-bold cursor-pointer' href={'/admin/categories/new'}>
+              新規作成
+            </Link>
           </div>
-          <div className="adminContentList">
+          <div className="mt-16">
             {categories.length === 0 ? (
               <p>表示できるカテゴリーがありません。</p>
             ) : (
               categories.map((elem) => (
                 <React.Fragment key={elem.id}>
-                  <Link className='adminContentLink' href={`/admin/categories/${elem.id}`}>
-                    <div className='adminContent'>
-                      <div className='adminContentTitle'>{elem.name}</div>
+                  <Link className='no-underline' href={`/admin/categories/${elem.id}`}>
+                    <div className='m-4'>
+                      <div className='text-4 font-bold text-[#4d4f5b]'>{elem.name}</div>
                     </div>
                   </Link>
-                  <hr />
+                  <hr className="h-[0.8px] bg-[#b7b8be] border-none"/>
                 </React.Fragment>
               ))
             )}

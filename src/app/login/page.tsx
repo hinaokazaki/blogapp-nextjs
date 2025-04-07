@@ -24,7 +24,7 @@ export default function Page() {
   }
 
   return (
-    <div>
+    <div className="flex justify-center pt-[240px]">
       <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[400px]">
         <div>
           <label
@@ -37,7 +37,7 @@ export default function Page() {
             type="email"
             name="email"
             id="email"
-            className="bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="name@company.com"
             required
             onChange={(e) => setEmail(e.target.value)}
