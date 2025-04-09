@@ -58,3 +58,7 @@ export type CategoriesButtonProps = {
   }[]
 }
 
+export type LoginSignupFormValue = {
+  email: string,
+  password: string,
+}

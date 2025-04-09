@@ -50,7 +50,6 @@ const PostForm: React.FC<Props> = ({
 
   const [isLoading, setIsLoading] = useState(true);
   const [categoryOptions, setCategoryOptions] = useState<SelectOptionForCategories[]>([]);
-  // const [thumbnailImageKey, setThumbnailImageKey] = useState('');
 
   // GET: カテゴリー一覧の取得
     useEffect(() => {
