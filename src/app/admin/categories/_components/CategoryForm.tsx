@@ -3,6 +3,7 @@ import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from "react-hook-fo
 import { CreateCategoryRequestBody } from "@/app/_types/type";
 import { useParams, useRouter } from "next/navigation";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { mutate } from "swr";
 
 type FormValues = {
   name: string;
@@ -41,6 +42,7 @@ const CategoryForm: React.FC<Props> = ({ register, handleSubmit, errors, isSubmi
           throw new Error();
         } else {
           alert('カテゴリーを削除しました');
+          mutate(`/api/admin/categories/${id}`);
           router.replace('/admin/categories');
         }
       } catch (error) {

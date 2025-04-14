@@ -1,52 +1,29 @@
 'use client'
 import React from "react";
-import { useState, useEffect } from "react";
+import useSWR from "swr";
+import { fetcherWithToken } from "@/lib/fetcherWithToken";
 import Loading from "@/app/_components/Loading";
 import Link from "next/link";
-import { CategoryData } from "@/app/_types/type";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import NotFound from "@/app/_components/Not-found";
+import { ApiResponseCategories } from "@/app/_types/type";
 
 const AdminCategories: React.FC = () => {
-  const [ categories, setCategories ] = useState<CategoryData[]>([]);
-  const [ isLoading, setIsLoading ] = useState(true);
-
   const { token } = useSupabaseSession();
  
-  useEffect(() => {
-    if (!token) return
-
-    const fetcher = async () => {
-      try {
-        const res = await fetch('/api/admin/categories', {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-            authorization: token,
-          },
-        })
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error();
-        } else {
-          console.log(data.categories);
-        }
-
-        setCategories(Array.isArray(data.categories) ? data.categories : []);
-      } catch (error) {
-        console.error('エラーが発生しました。', error);
-        setCategories([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetcher();
-  },[token])
+  const { data, error, isLoading } = useSWR(
+    token ? ['/api/admin/categories', token] : null, 
+    ([url, token]) => fetcherWithToken<ApiResponseCategories>(url, token));
 
   if (isLoading) {
     return <Loading />
   }
+
+  if (!data?.categories || data?.categories.length === 0) {
+    return <NotFound />
+  }
+
+  const categories = data.categories;
 
   return (
     <>

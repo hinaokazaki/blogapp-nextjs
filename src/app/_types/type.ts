@@ -62,3 +62,20 @@ export type LoginSignupFormValue = {
   email: string,
   password: string,
 }
+
+// API responce
+export type ApiResponsePosts = {
+  posts: PostData[]
+}
+
+export type ApiResponsePost = {
+  post: PostData
+}
+
+export type ApiResponseCategories = {
+  categories: CategoryData[]
+}
+
+export type ApiResponseCategory = {
+  category: CategoryData
+}

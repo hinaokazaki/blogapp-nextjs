@@ -4,6 +4,7 @@ import { CreateCategoryRequestBody } from "@/app/_types/type";
 import { useRouter } from "next/navigation";
 import CategoryForm from "../_components/CategoryForm";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { mutate } from "swr";
 
 
 const CreateNewCategory: React.FC = () => {
@@ -35,6 +36,7 @@ const CreateNewCategory: React.FC = () => {
         throw new Error();
       } else {
         alert('新しいカテゴリーを作成しました。')
+        mutate('/api/admin/categories');
         router.push('/admin/categories');
       }
     } catch (error) {

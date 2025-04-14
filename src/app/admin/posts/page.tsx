@@ -1,49 +1,33 @@
 'use client'
 import React from "react"
-import { useState, useEffect } from "react"
+import useSWR from "swr"
+import { fetcherWithToken } from "@/lib/fetcherWithToken"
 import { PostData } from "@/app/_types/type"
 import Loading from "@/app/_components/Loading"
 import Link from "next/link"
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession"
+import NotFound from "@/app/_components/Not-found"
+import { ApiResponsePosts } from "@/app/_types/type"
 
 const AdminPosts: React.FC = () => {
-  const [ posts, setPosts ] = useState<PostData[]>([])
-  const [ isLoading, setIsLoading ] = useState(true)
-
   const { token } = useSupabaseSession()
 
-  useEffect(() => {
-    if (!token) return
+  const { data, error, isLoading } = useSWR(
+    token ? ['/api/admin/posts', token] : null, 
+    ([url, token]) => fetcherWithToken<ApiResponsePosts>(url, token)
+  );
 
-    const fetcher = async () => {
-      try {
-        const res = await fetch('/api/admin/posts', {
-          method: 'GET',
-          headers: {
-            'content-Type': 'application/json',
-            Authorization: token,
-          },
-         })
-
-         const data = await res.json()
-         setPosts(data.posts)
-         console.log(data);
-      } catch (error) {
-        console.error('記事の取得に失敗しました。', error);
-        setPosts([])
-      } finally {
-        setIsLoading(false)
-      }
-    };
-
-    fetcher();
-  },[token]);
-
+  console.log(data)
   if (isLoading) {
     return <Loading/>
   }
 
-  console.log(posts);
+  if (!data?.posts || data.posts.length === 0) {
+    return <NotFound />
+  }
+
+  const posts: PostData[] = data.posts;
+
   return (
     <>
       <div>

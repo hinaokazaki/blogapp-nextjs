@@ -1,6 +1,5 @@
 'use client';
 import { useForm } from 'react-hook-form';
-import classes from './Contact.module.css';
 
 type Data = {
   name: string,

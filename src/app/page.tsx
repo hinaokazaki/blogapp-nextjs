@@ -1,37 +1,18 @@
 'use client';
 import React from 'react';
-import { useState, useEffect } from 'react';
 import { PostData } from '@/app/_types/type';
+import useSWR from 'swr'
 import Link from 'next/link';
 import Categories from '@/app/_components/Categories';
 import Text from '@/app/_components/Text';
 import Loading from './_components/Loading';
 import NotFound from './_components/Not-found';
+import { fetcher } from '@/lib/fetcher';
+import { ApiResponsePosts } from '@/app/_types/type';
 
 const Home: React.FC = () => {
-  const [posts, setPosts] = useState<PostData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetcher = async () => {
-      // 管理画面で取得したエンドポイントを入力
-      const res = await fetch('/api/posts', { 
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
-
-      const result = await res.json()
-      const data: PostData[] = result.posts
-      setPosts(data)
-      console.log(data);
-      setIsLoading(false);
-    };
-
-    fetcher(); 
-
-  },[])
+  // SWRを使ったAPIリクエスト
+  const { data, error, isLoading } = useSWR<ApiResponsePosts>('/api/posts', fetcher);
 
   // 本文のテキストに文字制限をかけた後にhtmlとして表示するようにする関数
   const maxLength: number = 60;
@@ -42,8 +23,10 @@ const Home: React.FC = () => {
     return <Loading />
   
   // ローディングが終わってpostsが空である時の表示、早期リターン
-  if(posts.length === 0) 
+  if(error || !data?.posts || data.posts.length === 0) 
     return <NotFound />
+
+  const posts: PostData[] = data.posts;
   
   return (
     <>

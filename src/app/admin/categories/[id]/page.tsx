@@ -1,16 +1,16 @@
 'use client'
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useParams, useRouter } from "next/navigation"
-import { CreateCategoryRequestBody } from "@/app/_types/type"
+import { ApiResponseCategory, CreateCategoryRequestBody } from "@/app/_types/type"
 import Loading from "@/app/_components/Loading"
 import "@/app/globals.css";
 import CategoryForm from "../_components/CategoryForm"
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession"
+import useSWR, { mutate } from "swr"
+import { fetcherWithToken } from "@/lib/fetcherWithToken"
 
 const AdminCategory: React.FC = () => {
-  const [ isLoading, setIsLoading ] = useState(true);
-
   const params = useParams();
   const id = params.id
   const router = useRouter();
@@ -28,37 +28,17 @@ const AdminCategory: React.FC = () => {
   } = useForm<CreateCategoryRequestBody>({defaultValues})
 
   // GET: カテゴリー詳細情報取得
+  const { data, error, isLoading } = useSWR(
+    token ? [`/api/admin/categories/${id}`, token] : null,
+    ([url, token]) => fetcherWithToken<ApiResponseCategory>(url, token)
+  )
+
   useEffect(() => {
-    if (!token) return 
-    
-    const fetcher = async () => {
-      try {
-        const res = await fetch(`/api/admin/categories/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: token,
-          },
-        })
-
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error();
-        } else {
-          reset({name: data.category.name});
-          console.log(data)
-        }
-       
-      } catch (error) {
-        console.error('カテゴリーの詳細の取得に失敗しました。', error);
-      } finally {
-        setIsLoading(false)
-      }
+    if (data?.category) {
+      return reset({name: data.category.name});
     }
-
-    fetcher();
-  },[token])
-
+  },[])
+  
   // PUT: カテゴリー更新
   const handleUpdate = async (data: CreateCategoryRequestBody) => {
     if (!token) return 
@@ -78,6 +58,7 @@ const AdminCategory: React.FC = () => {
       } else {
         reset(data);
         alert('カテゴリーを更新しました。');
+        mutate(`/api/admin/categories/${id}`);
         router.push('/admin/categories');
       }
 

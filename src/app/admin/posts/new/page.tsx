@@ -5,6 +5,7 @@ import { CreatePostRequestBody } from '@/app/_types/type';
 import "@/app/globals.css";
 import PostForm from '../_components/PostForm';
 import { useSupabaseSession } from '@/app/_hooks/useSupabaseSession';
+import { mutate } from 'swr';
 
 const CreateNewPost: React.FC = () => {
   const router = useRouter();
@@ -42,7 +43,7 @@ const CreateNewPost: React.FC = () => {
       const result = await res.json();
       if (res.ok) {
         alert('記事を作成しました。' + result.id);
-        console.log(result);
+        mutate('/api/admin/posts');
         router.push('/admin/posts');
       } else {
         console.log('エラー：' + result.status);

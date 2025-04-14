@@ -1,15 +1,16 @@
 'use client'
 import { Controller, Control } from "react-hook-form"
-import { useState,useEffect, ChangeEvent } from "react"
+import { ChangeEvent } from "react"
 import { useParams, useRouter } from "next/navigation";
 import Select from "react-select"
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormSetValue  } from "react-hook-form"
 import { CreatePostRequestBody } from "@/app/_types/type"
-import { SelectOptionForCategories } from "@/app/_types/type"
-import { CategoryData } from "@/app/_types/type";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { supabase } from "@/utils/supabase";
 import { v4 as uuidv4 } from 'uuid';
+import useSWR, { mutate } from "swr";
+import { fetcherWithToken } from "@/lib/fetcherWithToken";
+import { ApiResponseCategories } from "@/app/_types/type";
 
 type FormValues = {
   title: string,
@@ -48,101 +49,68 @@ const PostForm: React.FC<Props> = ({
   const router = useRouter();
   const { token } = useSupabaseSession();
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [categoryOptions, setCategoryOptions] = useState<SelectOptionForCategories[]>([]);
-
   // GET: カテゴリー一覧の取得
-    useEffect(() => {
-      if (!token) return 
+  const { data, error, isLoading } = useSWR(
+    token ? ['/api/admin/categories', token] : null,
+    ([url, token]) => fetcherWithToken<ApiResponseCategories>(url, token)
+  );
 
-      const fetcher = async () => {
-        try {
-          const res = await fetch('/api/admin/categories', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              authorization: token,
-            },
-          });
-  
-          const result = await res.json();
-          const data: CategoryData[] = result.categories;
-          console.log("APIレスポンス:", data); 
-          if (!res.ok) {
-            throw new Error();
-          } else {
-            setCategoryOptions(
-              data.map((cat) => ({
-                id: cat.id,
-                name: cat.name,
-              }))
-            );
-          }
-        
-        } catch (error) {
-          console.error('エラーが発生しました。', error);
-          setCategoryOptions([])
-        } finally {
-          setIsLoading(false);
-        }
-      }
-  
-      fetcher();
-    },[token]);
+  const categoryOptions = data?.categories
 
   // DELETE 削除処理
-    const handleDelete = async () => {
-      if (!token) return
+  const handleDelete = async () => {
+    if (!token) return
 
-      try {
-        const res = await fetch(`/api/admin/posts/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: token,
-          }
-        })
-
-        if (res.ok) {
-          alert('記事を削除しました。');
-          router.replace('/admin/posts');
-        } else {
-          throw new Error();
+    try {
+      const res = await fetch(`/api/admin/posts/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: token,
         }
-      } catch (error) {
-        console.error('Error', error);
-        alert('エラーが発生しました。');
+      })
+
+      if (res.ok) {
+        alert('記事を削除しました。');
+        mutate(`/api/admin/posts/${id}`);
+        router.replace('/admin/posts');
+      } else {
+        throw new Error();
       }
+    } catch (error) {
+      console.error('Error', error);
+      alert('エラーが発生しました。');
+    }
+  }
+
+  // 画像挿入処理
+  const handleImageChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+  ) : Promise<void> => {
+    if (!e.target.files || e.target.files.length == 0) {
+      return // 画像が選択されていないのでreturn
     }
 
-    // 画像挿入処理
-    const handleImageChange = async (
-      e: ChangeEvent<HTMLInputElement>,
-    ) : Promise<void> => {
-      if (!e.target.files || e.target.files.length == 0) {
-        return // 画像が選択されていないのでreturn
-      }
+    const file = e.target.files[0] // 選択された画像を取得
+    const filePath = `private/${uuidv4()}` // ファイルパスを指定
 
-      const file = e.target.files[0] // 選択された画像を取得
-      const filePath = `private/${uuidv4()}` // ファイルパスを指定
+    // supabaseに画像をアップロード
+    const { data, error } = await supabase.storage
+      .from('post-thumbnail') // ここでバケット名を指定
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      })
 
-      // supabaseに画像をアップロード
-      const { data, error } = await supabase.storage
-        .from('post-thumbnail') // ここでバケット名を指定
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: false,
-        })
-
-      // アップロードに失敗したらエラーを表示して終了
-      if (error) {
-        alert(error.message)
-        return
-      }
-
-      setValue('thumbnailImageKey', data.path)
-
+    // アップロードに失敗したらエラーを表示して終了
+    if (error) {
+      alert(error.message)
+      return
     }
+
+    setValue('thumbnailImageKey', data.path)
+
+  }
 
   return (
     <form className='w-[100%] flex flex-col' id='myForm' onSubmit={handleSubmit(submitFunction)}>
