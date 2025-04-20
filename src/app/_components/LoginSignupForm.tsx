@@ -1,71 +1,62 @@
 'use client'
-
-import { UseFormHandleSubmit, UseFormRegister, FieldErrors } from "react-hook-form"
 import { LoginSignupFormValue } from "../_types/type"
+import Input from "./input"
+import { useForm } from "react-hook-form"
+import Label from "./label"
+import ErrorMessage from "./ErrorMessage"
 
 interface Props {
-  handleSubmit: UseFormHandleSubmit<LoginSignupFormValue>;
-  register: UseFormRegister<LoginSignupFormValue>;
-  errors: FieldErrors<LoginSignupFormValue>;
-  isSubmitting: boolean;
   mode: 'login' | 'signup';
   onSubmit: (data: LoginSignupFormValue) => Promise<void>;
 }
 
-const LoginSignupForm: React.FC<Props> = ({
-  handleSubmit,
-  register,
-  errors,
-  isSubmitting,
-  mode,
-  onSubmit,
-}) => {
+const LoginSignupForm: React.FC<Props> = ({onSubmit, mode}) => {
+  const defaultValues = {
+    email: '',
+    password: '',
+  }
 
- return (
-  <div className="flex justify-center pt-[240px]">
+  const {
+    register,
+    handleSubmit,
+    formState: {errors, isSubmitting},
+  } = useForm<LoginSignupFormValue>({defaultValues})
+
+  return (
+    <div className="flex justify-center pt-[240px]">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-[400px]">
         <div>
-          <label
-            htmlFor="email"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            メールアドレス
-          </label>
-          <input
-            type="email"
-            id="email"
-            disabled={isSubmitting}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          <Label name='email' title='メールアドレス' />
+          <Input 
+            type='email'
+            name='email'
+            isSubmitting={isSubmitting}
+            register={register}
             placeholder="name@company.com"
-            {...register('email', {
-              required: 'メールアドレスを入力してください。',
+            validationRules={
+              {required: 'メールアドレスを入力してください。',
               pattern: {
                 value: /([a-z\d+\-.]+)@([a-z\d-]+(?:\.[a-z]+)*)/i,
-                message: 'メールアドレスの形式が不正です。'
+                message: 'メールアドレスの形式が不正です。'}
               }
-            })}
+            }
           />
         </div>
-        <div className='ml-[200px] text-red-500'>{errors.email?.message ?? ''}</div>
+        <ErrorMessage errors={errors} name='email' />
         <div>
-          <label
-            htmlFor="password"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            パスワード
-          </label>
-          <input
-            type="password"
-            id="password"
-            disabled={isSubmitting}
+          <Label name='password' title='パスワード' />
+          <Input
+            type='password'
+            name='password'
+            isSubmitting={isSubmitting}
+            register={register}
             placeholder="••••••••"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            {...register('password',{
+            validationRules={{
               required: 'パスワードを入力してください。',
-            })}
+            }}
           />
         </div>
-        <div className='ml-[200px] text-red-500'>{errors.password?.message ?? ''}</div>
+        <ErrorMessage errors={errors} name='password' />
         <div>
           <button
             type="submit"
@@ -76,7 +67,7 @@ const LoginSignupForm: React.FC<Props> = ({
         </div>
       </form>
     </div>
- )
+  )
 }
 
 export default LoginSignupForm;
