@@ -40,6 +40,8 @@ const AdminPost: React.FC = () => {
     ([url, token]) => fetcherWithToken<ApiResponsePost>(url, token)
   )
 
+  console.log(data?.post)
+
   useEffect(() => {
     if (data?.post) {
       reset({
@@ -90,7 +92,6 @@ const AdminPost: React.FC = () => {
   if (!data?.post) {
     return <NotFound />
  }
-
 
   return (
     <>

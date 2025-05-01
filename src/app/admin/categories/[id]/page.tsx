@@ -36,6 +36,7 @@ const AdminCategory: React.FC = () => {
   useEffect(() => {
     if (data?.category) {
       return reset({name: data.category.name});
+      console.log(data?.category.name);
     }
   },[])
   

@@ -6,7 +6,6 @@ import CategoryForm from "../_components/CategoryForm";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import { mutate } from "swr";
 
-
 const CreateNewCategory: React.FC = () => {
   const router = useRouter();
   const { token } = useSupabaseSession();
