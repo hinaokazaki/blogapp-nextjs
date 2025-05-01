@@ -1,8 +1,8 @@
 'use client'
 import { LoginSignupFormValue } from "../_types/type"
-import Input from "./input"
+import Input from './Input'
 import { useForm } from "react-hook-form"
-import Label from "./label"
+import Label from "./Label"
 import ErrorMessage from "./ErrorMessage"
 
 interface Props {

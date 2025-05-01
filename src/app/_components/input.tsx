@@ -1,9 +1,5 @@
 import { UseFormRegister, RegisterOptions, FieldValues, Path } from "react-hook-form";
 
-// type FormValue = {
-//   [key: string]: any,
-// }
-
 type Props<T extends FieldValues> = {
   type: string,
   name: Path<T>,
