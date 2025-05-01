@@ -1,19 +1,13 @@
 'use client'
 import React from "react";
-import useSWR from "swr";
-import { fetcherWithToken } from "@/lib/fetcherWithToken";
+import useFetch from "../_hooks/useFetch";
 import Loading from "@/app/_components/Loading";
 import Link from "next/link";
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import NotFound from "@/app/_components/Not-found";
 import { ApiResponseCategories } from "@/app/_types/type";
 
 const AdminCategories: React.FC = () => {
-  const { token } = useSupabaseSession();
- 
-  const { data, error, isLoading } = useSWR(
-    token ? ['/api/admin/categories', token] : null, 
-    ([url, token]) => fetcherWithToken<ApiResponseCategories>(url, token));
+  const { data, error, isLoading } = useFetch<ApiResponseCategories>('/api/admin/categories')
 
   if (isLoading) {
     return <Loading />

@@ -7,6 +7,7 @@ import Loading from "@/app/_components/Loading"
 import "@/app/globals.css";
 import CategoryForm from "../_components/CategoryForm"
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession"
+import useFetch from "../../_hooks/useFetch"
 import useSWR, { mutate } from "swr"
 import { fetcherWithToken } from "@/lib/fetcherWithToken"
 
@@ -28,15 +29,12 @@ const AdminCategory: React.FC = () => {
   } = useForm<CreateCategoryRequestBody>({defaultValues})
 
   // GET: カテゴリー詳細情報取得
-  const { data, error, isLoading } = useSWR(
-    token ? [`/api/admin/categories/${id}`, token] : null,
-    ([url, token]) => fetcherWithToken<ApiResponseCategory>(url, token)
-  )
+  const { data, error, isLoading } = useFetch<ApiResponseCategory>(`/api/admin/categories/${id}`)
+  console.log(data?.category.name);
 
   useEffect(() => {
     if (data?.category) {
       return reset({name: data.category.name});
-      console.log(data?.category.name);
     }
   },[])
   

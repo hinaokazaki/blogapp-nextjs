@@ -7,8 +7,8 @@ import Loading from "@/app/_components/Loading";
 import { CreatePostRequestBody } from "@/app/_types/type";
 import PostForm from "../_components/PostForm";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import useSWR, { mutate } from "swr";
-import { fetcherWithToken } from "@/lib/fetcherWithToken";
+import useFetch from "../../_hooks/useFetch";
+import { mutate } from "swr";
 import NotFound from "@/app/_components/Not-found";
 import { ApiResponsePost } from "@/app/_types/type";
 
@@ -35,10 +35,7 @@ const AdminPost: React.FC = () => {
   } = useForm<CreatePostRequestBody>({defaultValues});
 
   // GET SWRによる記事詳細取得処理
-  const { data, error, isLoading} = useSWR(
-    token? [`/api/admin/posts/${id}`, token] : null,
-    ([url, token]) => fetcherWithToken<ApiResponsePost>(url, token)
-  )
+  const { data, error, isLoading } = useFetch<ApiResponsePost>(`/api/admin/posts/${id}`)
 
   console.log(data?.post)
 

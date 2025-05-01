@@ -1,21 +1,14 @@
 'use client'
 import React from "react"
-import useSWR from "swr"
-import { fetcherWithToken } from "@/lib/fetcherWithToken"
 import { PostData } from "@/app/_types/type"
 import Loading from "@/app/_components/Loading"
 import Link from "next/link"
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession"
 import NotFound from "@/app/_components/Not-found"
 import { ApiResponsePosts } from "@/app/_types/type"
+import useFetch from "../_hooks/useFetch"
 
 const AdminPosts: React.FC = () => {
-  const { token } = useSupabaseSession()
-
-  const { data, error, isLoading } = useSWR(
-    token ? ['/api/admin/posts', token] : null, 
-    ([url, token]) => fetcherWithToken<ApiResponsePosts>(url, token)
-  );
+  const { data, error, isLoading } = useFetch<ApiResponsePosts>('/api/admin/posts')
 
   console.log(data)
   if (isLoading) {
