@@ -8,8 +8,8 @@ import "@/app/globals.css";
 import CategoryForm from "../_components/CategoryForm"
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession"
 import useFetch from "../../_hooks/useFetch"
-import useSWR, { mutate } from "swr"
-import { fetcherWithToken } from "@/lib/fetcherWithToken"
+import { mutate } from "swr"
+
 
 const AdminCategory: React.FC = () => {
   const params = useParams();
@@ -36,7 +36,7 @@ const AdminCategory: React.FC = () => {
     if (data?.category) {
       return reset({name: data.category.name});
     }
-  },[])
+  },[data])
   
   // PUT: カテゴリー更新
   const handleUpdate = async (data: CreateCategoryRequestBody) => {

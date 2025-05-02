@@ -51,7 +51,7 @@ const AdminPost: React.FC = () => {
         })),
       })
     }
-  },[])
+  },[data])
 
   // PUT 更新処理
   const handleUpdate = async (data: CreatePostRequestBody) => {
