@@ -88,20 +88,17 @@ const PostForm: React.FC<Props> = ({
   return (
     <form className='w-[100%] flex flex-col' id='myForm' onSubmit={handleSubmit(submitFunction)}>
       <Label name='title' title='タイトル' />
-      <Input 
-        name='title' 
+      <Input  
         type='text'
-        register={register}
-        isSubmitting={isSubmitting}
-        isLoading={isLoading}
-        placeholder=''
-        validationRules={{
+        {...register('title', {
           required: ' タイトルを入力して下さい。',
           maxLength: {
             value: 30,
             message: 'タイトルは３０文字以内にしてください。'
           }
-        }}
+        })}
+        disabled={isSubmitting || isLoading}
+        placeholder=''
       />
       <ErrorMessage errors={errors} name='title' />
       <Label name='content' title='内容' />

@@ -3,6 +3,7 @@ import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from "react-hook-fo
 import { CreateCategoryRequestBody } from "@/app/_types/type";
 import ErrorMessage from "@/app/_components/ErrorMessage";
 import Button from "../../_components/Button";
+import Input from "../../_components/Input";
 
 type FormValues = {
   name: string;
@@ -21,7 +22,10 @@ const CategoryForm: React.FC<Props> = ({ register, handleSubmit, errors, isSubmi
   return (
     <form className='w-[100%] flex flex-col' id='myForm' onSubmit={handleSubmit(submitFunction)}>
       <label className='text-base text-[#4d4f5b]' htmlFor="name">カテゴリー名</label>
-      <input className='mt-1 mb-4 min-h-[30px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg' id="name" type="text" disabled={isSubmitting}
+      <Input 
+        id="name" 
+        type="text" 
+        disabled={isSubmitting}
         {...register('name', {
           required: 'カテゴリー名を入力して下さい。',
         })}

@@ -29,17 +29,14 @@ const LoginSignupForm: React.FC<Props> = ({onSubmit, mode}) => {
           <Label name='email' title='メールアドレス' />
           <Input 
             type='email'
-            name='email'
-            isSubmitting={isSubmitting}
-            register={register}
+            disabled={isSubmitting}
+            {...register('email', {
+              required: 'メールアドレスを入力してください。',
+                pattern: {
+                  value: /([a-z\d+\-.]+)@([a-z\d-]+(?:\.[a-z]+)*)/i,
+                  message: 'メールアドレスの形式が不正です。'}
+            })}
             placeholder="name@company.com"
-            validationRules={
-              {required: 'メールアドレスを入力してください。',
-              pattern: {
-                value: /([a-z\d+\-.]+)@([a-z\d-]+(?:\.[a-z]+)*)/i,
-                message: 'メールアドレスの形式が不正です。'}
-              }
-            }
           />
         </div>
         <ErrorMessage errors={errors} name='email' />
@@ -47,13 +44,11 @@ const LoginSignupForm: React.FC<Props> = ({onSubmit, mode}) => {
           <Label name='password' title='パスワード' />
           <Input
             type='password'
-            name='password'
-            isSubmitting={isSubmitting}
-            register={register}
-            placeholder="••••••••"
-            validationRules={{
+            disabled={isSubmitting}
+            {...register('password', {
               required: 'パスワードを入力してください。',
-            }}
+            })}
+            placeholder="••••••••"
           />
         </div>
         <ErrorMessage errors={errors} name='password' />
