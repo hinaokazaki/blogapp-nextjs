@@ -14,6 +14,7 @@ import Label from "../../_components/Label";
 import Button from "../../_components/Button";
 import Input from "../../_components/Input";
 import ErrorMessage from "@/app/_components/ErrorMessage";
+import useFetch from "../../_hooks/useFetch"
 
 type FormValues = {
   title: string,
@@ -49,10 +50,7 @@ const PostForm: React.FC<Props> = ({
   const { token } = useSupabaseSession();
 
   // GET: カテゴリー一覧の取得
-  const { data, error, isLoading } = useSWR(
-    token ? ['/api/admin/categories', token] : null,
-    ([url, token]) => fetcherWithToken<ApiResponseCategories>(url, token)
-  );
+  const { data, error, isLoading } = useFetch<ApiResponseCategories>('/api/admin/categories')
 
   const categoryOptions = data?.categories
 
