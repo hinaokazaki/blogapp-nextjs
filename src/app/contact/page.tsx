@@ -1,6 +1,5 @@
 'use client';
 import { useForm } from 'react-hook-form';
-import classes from './Contact.module.css';
 
 type Data = {
   name: string,
@@ -52,13 +51,13 @@ const Contact: React.FC = () => {
 
   return (
     <>
-      <div className={classes.contactBox}>
+      <div className='mt-[40px] mx-auto px-[10px] max-w-[800px]'>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <h1 className={classes.formTitle}>問合わせフォーム</h1>
-          <div className={classes.formSection}>
-            <div className={classes.formBox}>
-              <label className={classes.formLabel} htmlFor='name'>お名前</label>
-              <input className={classes.formInput} id='name' type='text' disabled={isSubmitting}
+          <h1 className='text-2xl mb-[40px]'>問合わせフォーム</h1>
+          <div className='mb-[40px]'>
+            <div className='flex'>
+              <label className='w-[200px] text-lg' htmlFor='name'>お名前</label>
+              <input className='max-w-[calc(100%-10px)] h-[50px] m-0 p-0 rounded-lg flex-1 border-[1px] border-solid border-[rgb(198,198,198)]' id='name' type='text' disabled={isSubmitting}
                 {...register('name', {
                   required: '名前は必須入力です。',
                   maxLength: {
@@ -68,12 +67,12 @@ const Contact: React.FC = () => {
                 })}/>
             </div>
             {/* ??（ヌル合体演算子）でundefined または null のときに代わりの値を指定する */}
-            <div className={classes.errorMessage}>{errors.name?.message ?? ''}</div> 
+            <div className='ml-[200px] text-red-500'>{errors.name?.message ?? ''}</div> 
           </div>
-          <div className={classes.formSection}>
-            <div className={classes.formBox}>
-              <label className={classes.formLabel} htmlFor='email'>メールアドレス</label>
-              <input className={classes.formInput} id='email' type='text' disabled={isSubmitting}
+          <div className='mb-[40px]'>
+            <div className='flex'>
+              <label className='w-[200px] text-lg' htmlFor='email'>メールアドレス</label>
+              <input className='max-w-[calc(100%-10px)] h-[50px] m-0 p-0 rounded-lg flex-1 border-[1px] border-solid border-[rgb(198,198,198)]' id='email' type='text' disabled={isSubmitting}
                 {...register('email', {
                   required: 'メールアドレスは必須入力です。',
                   pattern: {
@@ -82,12 +81,12 @@ const Contact: React.FC = () => {
                   }
                 })}/>
             </div>
-            <div className={classes.errorMessage}>{errors.email?.message ?? ''}</div>
+            <div className='ml-[200px] text-red-500'>{errors.email?.message ?? ''}</div>
           </div>
-          <div className={classes.formSection}>
-            <div className={classes.formBox}>
-              <label className={classes.formLabel} htmlFor='message'>本文</label>
-              <textarea className={classes.textArea} id='message' disabled={isSubmitting} 
+          <div className='mb-[40px]'>
+            <div className='flex'>
+              <label className='w-[200px] text-lg' htmlFor='message'>本文</label>
+              <textarea className='max-w-[calc(100%-10px)] h-[200px] m-0 p-0 rounded-lg flex-1 border-[1px] border-solid border-[rgb(198,198,198)]' id='message' disabled={isSubmitting} 
               {...register('message', {
                 required: '本文は必須入力です。',
                 maxLength: {
@@ -96,13 +95,13 @@ const Contact: React.FC = () => {
                 }
               })}/>
             </div>
-            <div className={classes.errorMessage}>{errors.message?.message ?? ''}</div>
+            <div className='ml-[200px] text-red-500'>{errors.message?.message ?? ''}</div>
           </div>
-          <div className={classes.formButtons}>
-            <button className={classes.formSubmitButton} type="submit" disabled={isSubmitting}>
+          <div className='my-[50px] mx-auto flex justify-center'>
+            <button className='mx-[10px] py-2 px-4 bg-[rgb(31,41,55)] text-[rgb(255,255,255)] text-lg font-bold border-0 rounded-lg cursor-pointer' type="submit" disabled={isSubmitting}>
               送信
             </button>
-            <button className={classes.formClearButton} type="button" onClick={handleClear} disabled={isSubmitting}>
+            <button className='mx-[10px] py-2 px-4 bg-[rgb(198,198,198)] text-[rgb(31,41,55)] text-lg font-bold border-0 rounded-lg cursor-pointer' type="button" onClick={handleClear} disabled={isSubmitting}>
               クリア
             </button>
           </div>

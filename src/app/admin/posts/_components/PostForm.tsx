@@ -1,17 +1,25 @@
 'use client'
 import { Controller, Control } from "react-hook-form"
-import { useState,useEffect } from "react"
-import { useParams, useRouter } from "next/navigation";
+import { ChangeEvent } from "react"
 import Select from "react-select"
-import { FieldErrors, UseFormHandleSubmit, UseFormRegister,  } from "react-hook-form"
+import { FieldErrors, UseFormHandleSubmit, UseFormRegister, UseFormSetValue  } from "react-hook-form"
 import { CreatePostRequestBody } from "@/app/_types/type"
-import { SelectOptionForCategories } from "@/app/_types/type"
-import { CategoryData } from "@/app/_types/type";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { supabase } from "@/utils/supabase";
+import { v4 as uuidv4 } from 'uuid';
+import useSWR from "swr";
+import { fetcherWithToken } from "@/lib/fetcherWithToken";
+import { ApiResponseCategories } from "@/app/_types/type";
+import Label from "../../_components/Label";
+import Button from "../../_components/Button";
+import Input from "../../_components/Input";
+import ErrorMessage from "@/app/_components/ErrorMessage";
+import useFetch from "../../_hooks/useFetch"
 
 type FormValues = {
   title: string,
   content: string,
-  thumbnailUrl: string,
+  thumbnailImageKey: string,
   categories: {
     id: number;
     name: string;
@@ -22,6 +30,7 @@ interface Props {
   handleSubmit: UseFormHandleSubmit<FormValues>;
   isSubmitting: boolean;
   register: UseFormRegister<FormValues>;
+  setValue: UseFormSetValue<FormValues>
   errors: FieldErrors<FormValues>;
   submitFunction: (data: CreatePostRequestBody) => Promise<void>;
   control: Control<CreatePostRequestBody, any>;
@@ -32,81 +41,53 @@ const PostForm: React.FC<Props> = ({
   handleSubmit, 
   isSubmitting, 
   register, 
+  setValue,
   errors, 
   submitFunction,
   control,
   mode,
 }) => {
-
-  const params = useParams();
-  const id = params.id
-  const router = useRouter();
-  const [ isLoading, setIsLoading ] = useState(true);
-  const [ categoryOptions, setCategoryOptions ] = useState<SelectOptionForCategories[]>([]);
+  const { token } = useSupabaseSession();
 
   // GET: カテゴリー一覧の取得
-    useEffect(() => {
-      const fetcher = async () => {
-        try {
-          const res = await fetch('/api/admin/categories', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-  
-          const result = await res.json();
-          const data: CategoryData[] = result.categories;
-          console.log("APIレスポンス:", data); 
-          if (!res.ok) {
-            throw new Error();
-          } else {
-            setCategoryOptions(
-              data.map((cat) => ({
-                id: cat.id,
-                name: cat.name,
-              }))
-            );
-          }
-        
-        } catch (error) {
-          console.error('エラーが発生しました。', error);
-          setCategoryOptions([])
-        } finally {
-          setIsLoading(false);
-        }
-      }
-  
-      fetcher();
-    },[]);
+  const { data, error, isLoading } = useFetch<ApiResponseCategories>('/api/admin/categories')
 
-  // DELETE 削除処理
-    const handleDelete = async () => {
-      try {
-        const res = await fetch(`/api/admin/posts/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
+  const categoryOptions = data?.categories
 
-        if (res.ok) {
-          alert('記事を削除しました。');
-          router.replace('/admin/posts');
-        } else {
-          throw new Error();
-        }
-      } catch (error) {
-        console.error('Error', error);
-        alert('エラーが発生しました。');
-      }
+  // 画像挿入処理
+  const handleImageChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+  ) : Promise<void> => {
+    if (!e.target.files || e.target.files.length == 0) {
+      return // 画像が選択されていないのでreturn
     }
 
+    const file = e.target.files[0] // 選択された画像を取得
+    const filePath = `private/${uuidv4()}` // ファイルパスを指定
+
+    // supabaseに画像をアップロード
+    const { data, error } = await supabase.storage
+      .from('post-thumbnail') // ここでバケット名を指定
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+    // アップロードに失敗したらエラーを表示して終了
+    if (error) {
+      alert(error.message)
+      return
+    }
+
+    setValue('thumbnailImageKey', data.path)
+
+  }
+
   return (
-    <form className='adminForm' id='myForm' onSubmit={handleSubmit(submitFunction)}>
-      <label className='adminFormTitle' htmlFor='title'>タイトル</label>
-      <input
-        className='adminFormInput' id='title' type="text" disabled={isSubmitting || isLoading}
+    <form className='w-[100%] flex flex-col' id='myForm' onSubmit={handleSubmit(submitFunction)}>
+      <Label name='title' title='タイトル' />
+      <Input  
+        type='text'
         {...register('title', {
           required: ' タイトルを入力して下さい。',
           maxLength: {
@@ -114,10 +95,12 @@ const PostForm: React.FC<Props> = ({
             message: 'タイトルは３０文字以内にしてください。'
           }
         })}
+        disabled={isSubmitting || isLoading}
+        placeholder=''
       />
-      <div>{errors.title?.message ??  ''}</div>
-      <label className='adminFormTitle' htmlFor='title'>内容</label>
-      <textarea className='adminFormInputContent' id='content' disabled={isSubmitting || isLoading}
+      <ErrorMessage errors={errors} name='title' />
+      <Label name='content' title='内容' />
+      <textarea className='mt-1 mb-4 min-h-[60px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg' id='content' disabled={isSubmitting || isLoading}
         {...register('content', {
           required: '本文を入力してください。',
           maxLength: {
@@ -126,34 +109,34 @@ const PostForm: React.FC<Props> = ({
           },
         })}
       />
-      <div>{errors.content?.message ?? ''}</div>
-      <label className='adminFormTitle' htmlFor='thumbnailUrl'>サムネイルURL</label>
-      <input className='adminFormInput' id='thumbnailUrl' type="text" disabled={isSubmitting || isLoading}
-        {...register('thumbnailUrl', {
-          required: '画像URLを入力してください。',
-        })}
+      <ErrorMessage errors={errors} name='content' />
+      <Label name='thumbnailImageKey' title='サムネイルURL' />
+      <input 
+        className="mt-1 mb-4 min-h-[30px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg" 
+        id="thumbnailImageKey" 
+        disabled={isSubmitting || isLoading} 
+        type="file" 
+        accept="image/*" 
+        onChange={handleImageChange} 
       />
-      <div>{errors.thumbnailUrl?.message ?? ''}</div>
-      <label className='adminFormTitle' htmlFor='categories'>カテゴリー</label>
-        <Controller 
-          disabled={isSubmitting || isLoading}
-          name='categories'
-          control={control}
-          render={({field}) => (
-            <Select
-              className='adminFormInput'
-              {...field}
-              isMulti
-              options={categoryOptions}
-              getOptionLabel={(option) => option.name}
-              getOptionValue={(option) => String(option.id)}
-            />
-          )}  
-        />
-        <div>
-          <button className='adminFormSubmitBtn' form='myForm' type="submit">{mode === 'new' ? '作成' : '更新'}</button>
-          {mode === 'edit' ? <button className='adminFormDeleteBtn' type='button' onClick={handleDelete}>削除</button> : ''}
-        </div>
+      <ErrorMessage errors={errors} name='thumbnailImageKey' />
+      <Label name='categories' title='カテゴリー' />
+      <Controller 
+        disabled={isSubmitting || isLoading}
+        name='categories'
+        control={control}
+        render={({field}) => (
+          <Select
+            className='mt-1 mb-4 min-h-[30px] border-[1px] border-solid border-[#b7b8be] rounded-md text-lg'
+            {...field}
+            isMulti
+            options={categoryOptions}
+            getOptionLabel={(option) => option.name}
+            getOptionValue={(option) => String(option.id)}
+          />
+        )}  
+      />
+      <Button mode={mode} page='posts'/>
     </form>
   )
 }

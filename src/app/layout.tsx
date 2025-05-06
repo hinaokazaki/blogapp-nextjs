@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import { Inter } from 'next/font/google';
 import { ReactNode } from 'react';
 import "./globals.css";
+import { Header } from './_components/Header';
 
 // google font を有効化
 const fnt = Inter({ subsets: ['latin']});
@@ -15,15 +15,8 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ja">
-      <body id='body'>
-        <header>
-          <nav className='nav'>
-            <ul>
-              <li><Link className='headerLink' href='/'>Blog</Link></li>
-              <li><Link className='headerLink' href='/contact'>お問い合わせ</Link></li>
-            </ul>
-          </nav>
-        </header>
+      <body id='body' className='p-0 m-0'>
+        <Header />
         <div>
           {children}
         </div>

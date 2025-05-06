@@ -1,23 +1,26 @@
 'use client'
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { CreatePostRequestBody } from '@/app/_types/type';
 import "@/app/globals.css";
 import PostForm from '../_components/PostForm';
+import { useSupabaseSession } from '@/app/_hooks/useSupabaseSession';
+import { mutate } from 'swr';
 
 const CreateNewPost: React.FC = () => {
   const router = useRouter();
+  const { token } = useSupabaseSession();
 
   const defaultValues = {
     title: '',
     content: '',
-    thumbnailUrl: '',
+    thumbnailImageKey: '',
     categories: [],
   }
 
   const {
     register,
+    setValue,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -25,11 +28,14 @@ const CreateNewPost: React.FC = () => {
 
    // POST: 記事新規作成
   const onSubmit = async (data: CreatePostRequestBody) => {
+    if (!token) return
+    
     try {
       const res = await fetch('/api/admin/posts',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          authorization: token,
         },
         body: JSON.stringify(data),
       });
@@ -37,7 +43,7 @@ const CreateNewPost: React.FC = () => {
       const result = await res.json();
       if (res.ok) {
         alert('記事を作成しました。' + result.id);
-        console.log(result);
+        mutate('/api/admin/posts');
         router.push('/admin/posts');
       } else {
         console.log('エラー：' + result.status);
@@ -51,11 +57,12 @@ const CreateNewPost: React.FC = () => {
 
   return (
     <>
-      <h1 className='adminTitle'>記事作成</h1>
+      <h1 className='text-2xl text-[#333] font-bold mb-4'>記事作成</h1>
       <PostForm 
         handleSubmit={handleSubmit} 
         isSubmitting={isSubmitting}
         register={register} 
+        setValue={setValue}
         errors={errors} 
         submitFunction={onSubmit}
         control={control}

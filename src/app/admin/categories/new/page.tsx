@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form"
 import { CreateCategoryRequestBody } from "@/app/_types/type";
 import { useRouter } from "next/navigation";
 import CategoryForm from "../_components/CategoryForm";
-
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import { mutate } from "swr";
 
 const CreateNewCategory: React.FC = () => {
   const router = useRouter();
+  const { token } = useSupabaseSession();
 
   // フォームを初期化
   const { 
@@ -17,11 +19,14 @@ const CreateNewCategory: React.FC = () => {
 
   // サブミット時の処理、APIでデータを送信してアラート表示
   const onSubmit = async (data: CreateCategoryRequestBody) => {
+    if (!token) return
+
     try {
       const res = await fetch('/api/admin/categories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          authorization: token,
         },
         body: JSON.stringify(data),
       })
@@ -30,6 +35,7 @@ const CreateNewCategory: React.FC = () => {
         throw new Error();
       } else {
         alert('新しいカテゴリーを作成しました。')
+        mutate('/api/admin/categories');
         router.push('/admin/categories');
       }
     } catch (error) {
@@ -40,15 +46,15 @@ const CreateNewCategory: React.FC = () => {
 
   return (
     <>
-      <h1 className="adminTitle">カテゴリー作成</h1>
+      <h1 className="text-2xl text-[#333] font-bold mb-4">カテゴリー作成</h1>
       <CategoryForm 
         register={register}
         handleSubmit={handleSubmit}
         errors={errors}
         isSubmitting={isSubmitting}
         submitFunction={onSubmit}
+        mode='new'
       />
-      <button className='adminFormSubmitBtn' form='myForm' type='submit'>作成</button>
     </>
   )
 }
